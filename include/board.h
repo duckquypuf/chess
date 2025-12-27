@@ -90,6 +90,26 @@ public:
         movingPiece.type = None;
     }
 
+    void unmakeMove(int fromSquare, int toSquare)
+    {
+        Piece &targetPiece = pieces[fromSquare];
+        Piece &movingPiece = pieces[toSquare];
+
+        if (movingPiece.type == King)
+        {
+            if (movingPiece.isWhite)
+                whiteKing = toSquare;
+            else
+                blackKing = toSquare;
+        }
+
+        targetPiece.type = movingPiece.type;
+        targetPiece.isWhite = movingPiece.isWhite;
+        targetPiece.pos = toSquare;
+
+        movingPiece.type = None;
+    }
+
     std::vector<int> generateLegalMoves(int square)
     {
         std::vector<int> moves;
