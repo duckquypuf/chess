@@ -11,6 +11,14 @@ public:
     bool isWhiteTurn = true;
     std::vector<int> legalMoves;
 
+    int whiteKing;
+    int blackKing;
+
+    Board()
+    {
+        findKings();
+    }
+
     void handleInput(Window &window, InputState input, float boardSize)
     {
         if (window.wasLeftMouseJustPressed())
@@ -67,6 +75,14 @@ public:
         Piece &movingPiece = pieces[fromSquare];
         Piece &targetPiece = pieces[toSquare];
 
+        if (movingPiece.type == King)
+        {
+            if (movingPiece.isWhite)
+                whiteKing = toSquare;
+            else
+                blackKing = toSquare;
+        }
+
         targetPiece.type = movingPiece.type;
         targetPiece.isWhite = movingPiece.isWhite;
         targetPiece.pos = toSquare;
@@ -104,6 +120,57 @@ public:
         }
 
         return moves;
+    }
+
+    void findKings()
+    {
+        bool foundWhite = false;
+        bool foundBlack = false;
+
+        for(int i = 0; i < 64; i++)
+        {
+            Piece& piece = pieces[i];
+
+            if(piece.type == King)
+            {
+                if(piece.isWhite)
+                {
+                    foundWhite = true;
+                    whiteKing = i;
+                } else
+                {
+                    foundBlack = true;
+                    blackKing = i;
+                }
+            }
+
+            if(foundWhite && foundBlack) break;
+        }
+    }
+
+    bool isSquareAttacked(int square, bool byWhite)
+    {
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &piece = pieces[i];
+
+            if (piece.type == None || piece.isWhite != byWhite)
+                continue;
+
+            std::vector<int> moves = generateLegalMoves(i);
+
+            if (std::find(moves.begin(), moves.end(), square) != moves.end())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool isKingInCheck(bool whiteKing)
+    {
+        int kingSquare = whiteKing ? this->whiteKing : this->blackKing;
+        return isSquareAttacked(kingSquare, !whiteKing); // Attacked by opponent
     }
 
 private:
