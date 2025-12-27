@@ -19,6 +19,7 @@ class Piece
 public:
     PieceType type;
     bool isWhite;
+    bool hasMoved;
     uint8_t pos;
 
     Piece(const PieceType _type, bool white, const uint8_t _pos)
@@ -26,6 +27,7 @@ public:
         type = _type;
         isWhite = white;
         pos = _pos;
+        hasMoved = false;
     }
 };
 
@@ -34,7 +36,7 @@ std::vector<Piece> loadFenString(const char *fen)
     std::vector<Piece> pieces;
 
     int file = 0;
-    int rank = 7;
+    int rank = 0;
 
     for (int i = 0; fen[i] != '\0'; i++)
     {
@@ -46,7 +48,7 @@ std::vector<Piece> loadFenString(const char *fen)
         if (c == '/')
         {
             file = 0;
-            rank--;
+            rank++;
             continue;
         }
 
@@ -62,7 +64,7 @@ std::vector<Piece> loadFenString(const char *fen)
             continue;
         }
 
-        bool isWhite = (c >= 'A' && c <= 'Z');
+        bool isWhite = (c >= 'a' && c <= 'z');
         char lc = tolower(c);
 
         PieceType type = None;

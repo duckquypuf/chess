@@ -20,6 +20,8 @@
 class Renderer
 {
 public:
+    float smallestDimension = 0.0f;
+
     Renderer(const char *vertPath, const char *fragPath, Window window, const char *pieceVPath, const char *pieceFPath)
     {
         shader = new Shader(vertPath, fragPath);
@@ -61,7 +63,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void render(Camera cam, Window window, std::vector<Piece> pieces)
+    void render(Camera cam, Window window, std::vector<Piece> pieces, int selectedSquare, std::vector<int> legalMoves)
     {
         shader->use();
 
@@ -73,6 +75,17 @@ public:
 
         shader->setVec3("whiteColour", glm::vec3(0.913, 0.847, 0.709));
         shader->setVec3("blackColour", glm::vec3(0.658, 0.529, 0.397));
+
+        shader->setVec3("selectedWhiteColour", glm::vec3(0.913, 0.847, 0.0));
+        shader->setVec3("selectedBlackColour", glm::vec3(0.658, 0.529, 0.0));
+
+        shader->setInt("selectedSquare", selectedSquare);
+        shader->setInt("numLegalMoves", legalMoves.size());
+
+        for (int i = 0; i < std::min((int)legalMoves.size(), 32); i++)
+        {
+            shader->setInt(("legalMoves[" + std::to_string(i) + "]").c_str(), legalMoves[i]);
+        }
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -113,8 +126,6 @@ private:
     Shader *pieceShader;
 
     uint VAO = 0, VBO = 0;
-
-    float smallestDimension = 0.0f;
 
     static constexpr float quadVertices[24] =
         {

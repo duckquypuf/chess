@@ -759,6 +759,7 @@ CMakeFiles/chess.dir/src/main.cpp.o
  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h
  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h
  /Users/owaismacbook/Documents/chessCpp/include/application.h
+ /Users/owaismacbook/Documents/chessCpp/include/board.h
  /Users/owaismacbook/Documents/chessCpp/include/camera.h
  /Users/owaismacbook/Documents/chessCpp/include/piece.h
  /Users/owaismacbook/Documents/chessCpp/include/renderer.h

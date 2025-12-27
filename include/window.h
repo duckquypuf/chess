@@ -85,7 +85,31 @@ public:
         lastX = x;
         lastY = y;
 
+        input.leftMouseButton = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        input.rightMouseButton= glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
+
         return input;
+    }
+
+    int screenToSquare(float boardSize)
+    {
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+
+        float squareSize = boardSize / 8.0f;
+        float boardStartX = (screenWidth - boardSize) / 2.0f;
+        float boardStartY = (screenHeight - boardSize) / 2.0f;
+
+        if (mouseX < boardStartX || mouseX > boardStartX + boardSize ||
+            mouseY < boardStartY || mouseY > boardStartY + boardSize)
+        {
+            return -1; // Outside board
+        }
+
+        int file = (int)((mouseX - boardStartX) / squareSize);
+        int rank = 7 - (int)((mouseY - boardStartY) / squareSize); // Flip Y
+
+        return rank * 8 + file;
     }
 
     void update()
@@ -97,4 +121,14 @@ public:
 private:
     double lastX, lastY;
     bool firstMouse = true;
+    bool lastLeftMouseState = false;
+
+public:
+    bool wasLeftMouseJustPressed()
+    {
+        bool currentState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        bool justPressed = currentState && !lastLeftMouseState;
+        lastLeftMouseState = currentState;
+        return justPressed;
+    }
 };
