@@ -1,0 +1,3 @@
+/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles/chess.dir
+/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles/edit_cache.dir
+/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles/rebuild_cache.dir
