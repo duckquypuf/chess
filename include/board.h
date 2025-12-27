@@ -10,63 +10,52 @@ public:
     int selectedSquare = -1;
     bool isWhiteTurn = true;
     std::vector<int> legalMoves;
+    bool isDragging = false;
 
-    int whiteKing;
-    int blackKing;
+    int whiteKing = -1;
+    int blackKing = -1;
 
     Board()
     {
         findKings();
     }
 
-    void handleInput(Window &window, InputState input, float boardSize)
+    void handleInput(Window &window, float boardSize)
     {
-        if (window.wasLeftMouseJustPressed())
+        if (window.wasMouseJustPressed())
         {
             int square = window.screenToSquare(boardSize);
-            handleMouseClick(square);
-        }
-    }
 
-    void handleMouseClick(int square)
-    {
-        if (square == -1)
-            return;
-
-        Piece &piece = pieces[square];
-
-        if (selectedSquare == -1)
-        {
-            // No piece selected - select if valid
-            if (piece.type != None && piece.isWhite == isWhiteTurn)
+            if (square >= 0 && square < 64)
             {
-                selectedSquare = square;
-                legalMoves = generateLegalMoves(square);
+                Piece &piece = pieces[square];
+                if (piece.type != None && piece.isWhite == isWhiteTurn)
+                {
+                    selectedSquare = square;
+                    legalMoves = generateLegalMoves(square);
+                    isDragging = true;
+                }
             }
         }
-        else
+        else if (window.wasMouseJustReleased())
         {
-            // Piece already selected
-            if (std::find(legalMoves.begin(), legalMoves.end(), square) != legalMoves.end())
+            if (isDragging && selectedSquare != -1)
             {
-                // Valid move - make it
-                makeMove(selectedSquare, square);
-                isWhiteTurn = !isWhiteTurn;
-                selectedSquare = -1;
-                legalMoves.clear();
+                int targetSquare = window.screenToSquare(boardSize);
+
+                if (targetSquare >= 0 && targetSquare < 64)
+                {
+                    if (std::find(legalMoves.begin(), legalMoves.end(), targetSquare) != legalMoves.end())
+                    {
+                        makeMove(selectedSquare, targetSquare);
+                        isWhiteTurn = !isWhiteTurn;
+                    }
+                }
             }
-            else if (piece.type != None && piece.isWhite == isWhiteTurn)
-            {
-                // Clicked another piece of same color - switch selection
-                selectedSquare = square;
-                legalMoves = generateLegalMoves(square);
-            }
-            else
-            {
-                // Clicked empty square or opponent piece (not a legal move) - deselect
-                selectedSquare = -1;
-                legalMoves.clear();
-            }
+
+            selectedSquare = -1;
+            legalMoves.clear();
+            isDragging = false;
         }
     }
 
@@ -90,27 +79,54 @@ public:
         movingPiece.type = None;
     }
 
-    void unmakeMove(int fromSquare, int toSquare)
+    void unmakeMove(int fromSquare, int toSquare, Piece capturedPiece)
     {
-        Piece &targetPiece = pieces[fromSquare];
         Piece &movingPiece = pieces[toSquare];
+        Piece &originalSquare = pieces[fromSquare];
 
         if (movingPiece.type == King)
         {
             if (movingPiece.isWhite)
-                whiteKing = toSquare;
+                whiteKing = fromSquare;
             else
-                blackKing = toSquare;
+                blackKing = fromSquare;
         }
 
-        targetPiece.type = movingPiece.type;
-        targetPiece.isWhite = movingPiece.isWhite;
-        targetPiece.pos = toSquare;
+        originalSquare.type = movingPiece.type;
+        originalSquare.isWhite = movingPiece.isWhite;
+        originalSquare.pos = fromSquare;
 
-        movingPiece.type = None;
+        pieces[toSquare] = capturedPiece;
     }
 
     std::vector<int> generateLegalMoves(int square)
+    {
+        std::vector<int> pseudoLegalMoves = generatePseudoLegalMoves(square);
+        std::vector<int> legalMoves;
+
+        Piece &piece = pieces[square];
+
+        for (int targetSquare : pseudoLegalMoves)
+        {
+            Piece capturedPiece = pieces[targetSquare];
+
+            makeMove(square, targetSquare);
+
+            bool inCheck = isKingInCheck(piece.isWhite);
+
+            unmakeMove(square, targetSquare, capturedPiece);
+
+            if (!inCheck)
+            {
+                legalMoves.push_back(targetSquare);
+            }
+        }
+
+        return legalMoves;
+    }
+
+
+    std::vector<int> generatePseudoLegalMoves(int square)
     {
         std::vector<int> moves;
         Piece &piece = pieces[square];
@@ -147,24 +163,26 @@ public:
         bool foundWhite = false;
         bool foundBlack = false;
 
-        for(int i = 0; i < 64; i++)
+        for (int i = 0; i < 64; i++)
         {
-            Piece& piece = pieces[i];
+            Piece &piece = pieces[i];
 
-            if(piece.type == King)
+            if (piece.type == King)
             {
-                if(piece.isWhite)
+                if (piece.isWhite)
                 {
                     foundWhite = true;
                     whiteKing = i;
-                } else
+                }
+                else
                 {
                     foundBlack = true;
                     blackKing = i;
                 }
             }
 
-            if(foundWhite && foundBlack) break;
+            if (foundWhite && foundBlack)
+                break;
         }
     }
 
@@ -177,7 +195,7 @@ public:
             if (piece.type == None || piece.isWhite != byWhite)
                 continue;
 
-            std::vector<int> moves = generateLegalMoves(i);
+            std::vector<int> moves = generatePseudoLegalMoves(i);
 
             if (std::find(moves.begin(), moves.end(), square) != moves.end())
             {
@@ -190,7 +208,7 @@ public:
     bool isKingInCheck(bool whiteKing)
     {
         int kingSquare = whiteKing ? this->whiteKing : this->blackKing;
-        return isSquareAttacked(kingSquare, !whiteKing); // Attacked by opponent
+        return isSquareAttacked(kingSquare, !whiteKing);
     }
 
 private:
@@ -200,7 +218,6 @@ private:
             return false;
 
         Piece &target = pieces[square];
-        // Can move to empty square or capture opponent piece
         return target.type == None || target.isWhite != isWhite;
     }
 
@@ -223,39 +240,34 @@ private:
             int currentFile = getFile(current);
             int currentRank = getRank(current);
 
-            // Check if we wrapped around the board (file jumped from 7 to 0 or vice versa)
-            int fileDiff = abs(currentFile - startFile);
-            int rankDiff = abs(currentRank - startRank);
-
-            // For valid moves, file and rank differences should be consistent
-            // If we moved right and file decreased, we wrapped
             if (dirOffset == 1 && currentFile < startFile)
-                break; // Right wrap
+                break;
             if (dirOffset == -1 && currentFile > startFile)
-                break; // Left wrap
+                break;
+            if (dirOffset == 8 && currentRank <= startRank)
+                break;
+            if (dirOffset == -8 && currentRank >= startRank)
+                break;
             if (dirOffset == 9 && (currentFile <= startFile || currentRank <= startRank))
-                break; // Up-right wrap
+                break;
             if (dirOffset == 7 && (currentFile >= startFile || currentRank <= startRank))
-                break; // Up-left wrap
+                break;
             if (dirOffset == -7 && (currentFile <= startFile || currentRank >= startRank))
-                break; // Down-right wrap
+                break;
             if (dirOffset == -9 && (currentFile >= startFile || currentRank >= startRank))
-                break; // Down-left wrap
+                break;
 
             Piece &target = pieces[current];
 
-            // Empty square - can move here and continue
             if (target.type == None)
             {
                 moves.push_back(current);
             }
-            // Opponent piece - can capture but stop
             else if (target.isWhite != isWhite)
             {
                 moves.push_back(current);
                 break;
             }
-            // Own piece - stop
             else
             {
                 break;
@@ -276,13 +288,11 @@ public:
         int direction = isWhite ? 1 : -1;
         int startRank = isWhite ? 1 : 6;
 
-        // Forward move
         int forward = square + (direction * 8);
         if (forward >= 0 && forward <= 63 && pieces[forward].type == None)
         {
             moves.push_back(forward);
 
-            // Double move from starting position
             if (rank == startRank)
             {
                 int doubleForward = square + (direction * 16);
@@ -293,11 +303,9 @@ public:
             }
         }
 
-        // Captures
         int captureLeft = square + (direction * 8) - 1;
         int captureRight = square + (direction * 8) + 1;
 
-        // Left capture (check not wrapping around board)
         if (file > 0 && captureLeft >= 0 && captureLeft <= 63)
         {
             Piece &target = pieces[captureLeft];
@@ -307,7 +315,6 @@ public:
             }
         }
 
-        // Right capture
         if (file < 7 && captureRight >= 0 && captureRight <= 63)
         {
             Piece &target = pieces[captureRight];
@@ -326,7 +333,6 @@ public:
         int file = getFile(square);
         int rank = getRank(square);
 
-        // All 8 possible knight moves
         int offsets[8] = {17, 15, 10, 6, -6, -10, -15, -17};
         int fileChanges[8] = {1, -1, 2, -2, -2, 2, -1, 1};
         int rankChanges[8] = {2, 2, 1, 1, -1, -1, -2, -2};
@@ -337,7 +343,6 @@ public:
             int newFile = file + fileChanges[i];
             int newRank = rank + rankChanges[i];
 
-            // Check bounds
             if (newFile >= 0 && newFile <= 7 && newRank >= 0 && newRank <= 7)
             {
                 if (isValidMove(newSquare, isWhite))
@@ -353,26 +358,25 @@ public:
     std::vector<int> generateBishopMoves(int square, bool isWhite)
     {
         std::vector<int> moves;
-        addSlidingMoves(moves, square, isWhite, 9);  // Up-right
-        addSlidingMoves(moves, square, isWhite, 7);  // Up-left
-        addSlidingMoves(moves, square, isWhite, -7); // Down-right
-        addSlidingMoves(moves, square, isWhite, -9); // Down-left
+        addSlidingMoves(moves, square, isWhite, 9);
+        addSlidingMoves(moves, square, isWhite, 7);
+        addSlidingMoves(moves, square, isWhite, -7);
+        addSlidingMoves(moves, square, isWhite, -9);
         return moves;
     }
 
     std::vector<int> generateRookMoves(int square, bool isWhite)
     {
         std::vector<int> moves;
-        addSlidingMoves(moves, square, isWhite, 8);  // Up
-        addSlidingMoves(moves, square, isWhite, -8); // Down
-        addSlidingMoves(moves, square, isWhite, 1);  // Right
-        addSlidingMoves(moves, square, isWhite, -1); // Left
+        addSlidingMoves(moves, square, isWhite, 8);
+        addSlidingMoves(moves, square, isWhite, -8);
+        addSlidingMoves(moves, square, isWhite, 1);
+        addSlidingMoves(moves, square, isWhite, -1);
         return moves;
     }
 
     std::vector<int> generateQueenMoves(int square, bool isWhite)
     {
-        // Queen moves like rook + bishop
         std::vector<int> moves = generateRookMoves(square, isWhite);
         std::vector<int> bishopMoves = generateBishopMoves(square, isWhite);
         moves.insert(moves.end(), bishopMoves.begin(), bishopMoves.end());
@@ -385,7 +389,6 @@ public:
         int file = getFile(square);
         int rank = getRank(square);
 
-        // All 8 directions: up, down, left, right, and 4 diagonals
         int offsets[8] = {8, -8, 1, -1, 9, 7, -7, -9};
         int fileChanges[8] = {0, 0, 1, -1, 1, -1, 1, -1};
         int rankChanges[8] = {1, -1, 0, 0, 1, 1, -1, -1};
@@ -396,7 +399,6 @@ public:
             int newFile = file + fileChanges[i];
             int newRank = rank + rankChanges[i];
 
-            // Check bounds
             if (newFile >= 0 && newFile <= 7 && newRank >= 0 && newRank <= 7)
             {
                 if (isValidMove(newSquare, isWhite))

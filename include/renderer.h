@@ -63,7 +63,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void render(Camera cam, Window window, std::vector<Piece> pieces, int selectedSquare, std::vector<int> legalMoves)
+    void render(Camera cam, Window window, std::vector<Piece> pieces, int selectedSquare, std::vector<int> legalMoves, bool isDragging)
     {
         shader->use();
 
@@ -99,11 +99,16 @@ public:
 
         pieceShader->setVec2("scale", glm::vec2(sx, sy));
 
-        for(int i = 0; i < 64; i++)
+        for (int i = 0; i < 64; i++)
         {
             Piece piece = pieces[i];
-            
-            if(piece.type == None) continue;
+
+            if (piece.type == None)
+                continue;
+
+            // Skip drawing the selected piece at its board position if dragging
+            if (isDragging && i == selectedSquare)
+                continue;
 
             int posX = piece.pos % 8 + 1;
             int posY = floor((piece.pos + 8.0f) / 8.0f);
@@ -118,6 +123,29 @@ public:
 
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+
+        if (isDragging && selectedSquare >= 0 && selectedSquare < 64)
+        {
+            Piece draggedPiece = pieces[selectedSquare];
+
+            if (draggedPiece.type != None)
+            {
+                glm::vec2 mousePos = window.getMousePosition();
+
+                // Convert to normalized device coordinates centered on mouse
+                float nx = (mousePos.x / window.screenWidth) * 2.0f - 1.0f;
+                float ny = 1.0f - (mousePos.y / window.screenHeight) * 2.0f;
+
+                pieceShader->setVec2("offset", glm::vec2(nx, ny));
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, draggedPiece.isWhite ? whiteTextures[draggedPiece.type] : blackTextures[draggedPiece.type]);
+                pieceShader->setInt("pieceTex", 0);
+
+                glBindVertexArray(VAO);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+            }
         }
     }
 

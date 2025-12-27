@@ -735,25 +735,14 @@ CMakeFiles/chess.dir/src/main.cpp.o: \
   /Users/owaismacbook/Documents/chessCpp/include/window.h \
   /Users/owaismacbook/Documents/chessCpp/thirdparty/glad/glad.h \
   /Users/owaismacbook/Documents/chessCpp/thirdparty/KHR/khrplatform.h \
-  /opt/homebrew/include/GLFW/glfw3.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/sstream \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iomanip \
-  /Users/owaismacbook/Documents/chessCpp/include/renderer.h \
-  /Users/owaismacbook/Documents/chessCpp/thirdparty/stb_image.h \
-  /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui.h \
-  /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imconfig.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/float.h \
-  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/float.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/float.h \
-  /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_glfw.h \
-  /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_opengl3.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
-  /Users/owaismacbook/Documents/chessCpp/include/shader.h \
-  /opt/homebrew/include/glm/glm.hpp \
+  /opt/homebrew/include/GLFW/glfw3.h /opt/homebrew/include/glm/glm.hpp \
   /opt/homebrew/include/glm/detail/_fixes.hpp \
   /opt/homebrew/include/glm/detail/setup.hpp \
   /opt/homebrew/include/glm/detail/../simd/platform.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cfloat \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/float.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/float.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/float.h \
   /opt/homebrew/include/glm/fwd.hpp \
   /opt/homebrew/include/glm/detail/qualifier.hpp \
   /opt/homebrew/include/glm/vec2.hpp \
@@ -899,6 +888,16 @@ CMakeFiles/chess.dir/src/main.cpp.o: \
   /opt/homebrew/include/glm/vector_relational.hpp \
   /opt/homebrew/include/glm/integer.hpp \
   /opt/homebrew/include/glm/detail/func_integer.inl \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/sstream \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iomanip \
+  /Users/owaismacbook/Documents/chessCpp/include/renderer.h \
+  /Users/owaismacbook/Documents/chessCpp/thirdparty/stb_image.h \
+  /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui.h \
+  /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imconfig.h \
+  /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_glfw.h \
+  /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_opengl3.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/TargetConditionals.h \
+  /Users/owaismacbook/Documents/chessCpp/include/shader.h \
   /opt/homebrew/include/glm/gtc/matrix_transform.hpp \
   /opt/homebrew/include/glm/gtc/../mat4x4.hpp \
   /opt/homebrew/include/glm/gtc/../vec2.hpp \

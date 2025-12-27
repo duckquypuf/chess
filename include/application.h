@@ -17,9 +17,9 @@ public:
         while(!glfwWindowShouldClose(window.window))
         {
             window.processInput();
-            board.handleInput(window, window.getInput(), renderer.smallestDimension);
+            board.handleInput(window, renderer.smallestDimension);
             renderer.beginFrame();
-            renderer.render(camera, window, board.pieces, board.selectedSquare, board.legalMoves);
+            renderer.render(camera, window, board.pieces, board.selectedSquare, board.legalMoves, board.isDragging);
             window.update();
         }
     }
