@@ -62,6 +62,6 @@ namespace MoveGen
     // --- RUNTIME DATA ---
     inline std::vector<Move> moves;
 
-    std::vector<Move> generateMoves(const Board &board);
-    std::vector<Move> generateSlidingMoves(const Board &board, int startSquare, PieceType type);
+    std::vector<Move> generateMoves(const Board *board);
+    std::vector<Move> generateSlidingMoves(const Board *board, int startSquare, PieceType type);
 };
