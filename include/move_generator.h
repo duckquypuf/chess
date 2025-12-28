@@ -24,10 +24,12 @@ namespace MoveGen
     inline constexpr int SquareCount = 64;
     inline constexpr int DirectionCount = 8;
 
-    inline constexpr std::array<int, DirectionCount> directionOffsets
-    {
-        8, -8, -1, 1, 7, -7, 9, -9
-    };
+    inline constexpr std::array<int, DirectionCount> directionOffsets{
+        8, -8, -1, 1, 7, -7, 9, -9};
+
+    // Knight move offsets
+    inline constexpr std::array<int, 8> knightOffsets{
+        17, 15, 10, 6, -6, -10, -15, -17};
 
     inline std::array<std::array<int, DirectionCount>, SquareCount> numSquaresToEdge{};
 
@@ -44,17 +46,16 @@ namespace MoveGen
 
                 const int squareIndex = rank * BoardSize + file;
 
-                numSquaresToEdge[squareIndex] = 
-                {
-                    north,
-                    south,
-                    west,
-                    east,
-                    std::min(north, west),
-                    std::min(south, east),
-                    std::min(north, east),
-                    std::min(south, west)
-                };
+                numSquaresToEdge[squareIndex] =
+                    {
+                        north,
+                        south,
+                        west,
+                        east,
+                        std::min(north, west),
+                        std::min(south, east),
+                        std::min(north, east),
+                        std::min(south, west)};
             }
         }
     }
@@ -62,6 +63,14 @@ namespace MoveGen
     // --- RUNTIME DATA ---
     inline std::vector<Move> moves;
 
+    // Helper functions
+    inline int getFile(int square) { return square % 8; }
+    inline int getRank(int square) { return square / 8; }
+
+    // Move generation functions
     std::vector<Move> generateMoves(const Board *board);
     void generateSlidingMoves(const Board *board, int startSquare, const Piece &piece);
+    void generateKnightMoves(const Board *board, int startSquare, const Piece &piece);
+    void generateKingMoves(const Board *board, int startSquare, const Piece &piece);
+    void generatePawnMoves(const Board *board, int startSquare, const Piece &piece);
 };

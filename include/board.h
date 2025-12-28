@@ -12,7 +12,7 @@
 class Board
 {
 public:
-    std::vector<Piece> pieces = loadFenString("rnbqkbnr/8/8/8/8/8/8/RNBQKBNR");
+    std::vector<Piece> pieces = loadFenString("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr");
     int selectedSquare = -1;
     bool isWhiteTurn = true;
     std::vector<int> legalMoves;
@@ -33,22 +33,33 @@ public:
 
     void handleInput(Window &window, float boardSize)
     {
-        if (window.wasMouseJustPressed() && isWhiteTurn)
+        if (window.wasMouseJustPressed())// && isWhiteTurn)
         {
             int square = window.screenToSquare(boardSize);
 
             if (square >= 0 && square < 64)
             {
-                Piece &piece = pieces[square];
+                const Piece &piece = pieces[square];
                 if (piece.type != None && piece.isWhite == isWhiteTurn)
                 {
                     selectedSquare = square;
-                    MoveGen::generateMoves(this);
+
+                    // Generate moves and extract destinations for this piece
+                    std::vector<Move> generatedMoves = MoveGen::generateMoves(this);
+                    legalMoves.clear();
+                    for (const Move &m : generatedMoves)
+                    {
+                        if (m.from == selectedSquare)
+                        {
+                            legalMoves.push_back(m.to);
+                        }
+                    }
+
                     isDragging = true;
                 }
             }
         }
-        else if (window.wasMouseJustReleased() && isWhiteTurn)
+        else if (window.wasMouseJustReleased())// && isWhiteTurn)
         {
             if (isDragging && selectedSquare != -1)
             {
@@ -60,8 +71,7 @@ public:
                     {
                         Move m = Move(selectedSquare, targetSquare);
                         makeMove(m);
-                        isWhiteTurn = false;
-                        //checkForMate();
+                        isWhiteTurn = !isWhiteTurn;
                     }
                 }
             }
@@ -77,10 +87,43 @@ public:
         Piece &movingPiece = pieces[move.from];
         Piece &targetPiece = pieces[move.to];
 
+        // Check if this is a pawn moving two squares (for en passant next turn)
+        int movedSquares = abs(move.to - move.from);
+        bool isPawnDoubleMove = (movingPiece.type == Pawn && movedSquares == 16);
+
+        // Check if this is an en passant capture
+        bool isEnPassant = (movingPiece.type == Pawn &&
+                            move.to == enPassantSquare &&
+                            enPassantSquare != -1);
+
+        // Make the move
         targetPiece.type = movingPiece.type;
         targetPiece.isWhite = movingPiece.isWhite;
-
+        targetPiece.hasMoved = true;
         movingPiece.type = None;
+
+        // Handle en passant capture - remove the captured pawn
+        if (isEnPassant)
+        {
+            int capturedPawnSquare = movingPiece.isWhite ? (move.to - 8) : (move.to + 8);
+            pieces[capturedPawnSquare].type = None;
+        }
+
+        // Reset en passant square every move
+        enPassantSquare = -1;
+
+        // Set new en passant square if pawn moved two squares
+        if (isPawnDoubleMove)
+        {
+            // En passant square is the square the pawn jumped over
+            enPassantSquare = movingPiece.isWhite ? (move.from + 8) : (move.from - 8);
+        }
+
+        // Handle Pawn Promotion
+        if (targetPiece.type == Pawn && getRank(targetPiece.pos) > 55 || getRank(targetPiece.pos) < 8)
+        {
+            promotePawn(targetPiece.pos, Queen);
+        }
     }
     
     /*void moveComputer(bool isWhite)
