@@ -17,7 +17,38 @@ public:
         while(!glfwWindowShouldClose(window.window))
         {
             window.processInput();
-            board.handleInput(window, renderer.smallestDimension);
+
+            std::cout << board.lastPawnOrCapture << std::endl;
+            //board.handleInput(window, renderer.smallestDimension);
+
+            board.moveComputer(true);
+
+            if(board.checkmate >= 0)
+            {
+                // End Game
+
+                if(board.checkmate == 2)
+                    std::cout << "STALEMATE" << std::endl;
+                else if(board.checkmate == 1)
+                    std::cout << "MATE FOR WHITE" << std::endl;
+                else
+                    std::cout << "MATE FOR BLACK" << std::endl;
+            }
+
+            board.moveComputer(false);
+
+            if (board.checkmate >= 0)
+            {
+                // End Game
+
+                if (board.checkmate == 2)
+                    std::cout << "STALEMATE" << std::endl;
+                else if (board.checkmate == 1)
+                    std::cout << "MATE FOR WHITE" << std::endl;
+                else
+                    std::cout << "MATE FOR BLACK" << std::endl;
+            }
+
             renderer.beginFrame();
             renderer.render(camera, window, board.pieces, board.selectedSquare, board.legalMoves, board.isDragging);
             window.update();

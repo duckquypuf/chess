@@ -73,11 +73,10 @@ public:
         shader->setVec2("screenRes", glm::vec2(window.screenWidth, window.screenHeight));
         shader->setFloat("boardSize", smallestDimension);
 
-        shader->setVec3("whiteColour", glm::vec3(0.913, 0.847, 0.709));
-        shader->setVec3("blackColour", glm::vec3(0.658, 0.529, 0.397));
+        shader->setVec3("whiteColour", glm::vec3(0.891, 0.818, 0.719));
+        shader->setVec3("blackColour", glm::vec3(0.579, 0.432, 0.360));
 
-        shader->setVec3("selectedWhiteColour", glm::vec3(0.913, 0.847, 0.0));
-        shader->setVec3("selectedBlackColour", glm::vec3(0.658, 0.529, 0.0));
+        shader->setVec3("selectedColour", glm::vec3(0.813, 0.458, 0.187));
 
         shader->setInt("selectedSquare", selectedSquare);
         shader->setInt("numLegalMoves", legalMoves.size());

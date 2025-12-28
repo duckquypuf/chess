@@ -8,12 +8,17 @@ class Board
 public:
     std::vector<Piece> pieces = loadFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
     int selectedSquare = -1;
+    int enPassantSquare = -1;
     bool isWhiteTurn = true;
     std::vector<int> legalMoves;
     bool isDragging = false;
 
     int whiteKing = -1;
     int blackKing = -1;
+
+    int checkmate = -1;
+
+    int lastPawnOrCapture = 0;
 
     Board()
     {
@@ -22,7 +27,7 @@ public:
 
     void handleInput(Window &window, float boardSize)
     {
-        if (window.wasMouseJustPressed())
+        if (window.wasMouseJustPressed() && isWhiteTurn)
         {
             int square = window.screenToSquare(boardSize);
 
@@ -37,7 +42,7 @@ public:
                 }
             }
         }
-        else if (window.wasMouseJustReleased())
+        else if (window.wasMouseJustReleased() && isWhiteTurn)
         {
             if (isDragging && selectedSquare != -1)
             {
@@ -48,7 +53,8 @@ public:
                     if (std::find(legalMoves.begin(), legalMoves.end(), targetSquare) != legalMoves.end())
                     {
                         makeMove(selectedSquare, targetSquare);
-                        isWhiteTurn = !isWhiteTurn;
+                        isWhiteTurn = false;
+                        checkForMate();
                     }
                 }
             }
@@ -58,45 +64,208 @@ public:
             isDragging = false;
         }
     }
-
-    void makeMove(int fromSquare, int toSquare)
+    
+    void moveComputer(bool isWhite)
     {
-        Piece &movingPiece = pieces[fromSquare];
-        Piece &targetPiece = pieces[toSquare];
+        if(checkmate >= 0) return;
 
-        if (movingPiece.type == King)
+        if (isWhiteTurn == isWhite)
         {
-            if (movingPiece.isWhite)
-                whiteKing = toSquare;
-            else
-                blackKing = toSquare;
+            Move move = chooseComputerMove(isWhite);
+
+            if (move.from < 0 || move.to < 0)
+                return; // game over
+
+            makeMove(move.from, move.to, false);
+            isWhiteTurn = !isWhite;
+            checkForMate();
         }
-
-        targetPiece.type = movingPiece.type;
-        targetPiece.isWhite = movingPiece.isWhite;
-        targetPiece.pos = toSquare;
-
-        movingPiece.type = None;
     }
 
-    void unmakeMove(int fromSquare, int toSquare, Piece capturedPiece)
+    Move makeMove(int from, int to, bool simulate = false)
     {
-        Piece &movingPiece = pieces[toSquare];
-        Piece &originalSquare = pieces[fromSquare];
+        Move m;
+        m.from = from;
+        m.to = to;
 
-        if (movingPiece.type == King)
+        m.prevWhiteKing = whiteKing;
+        m.prevBlackKing = blackKing;
+
+        m.prevLastPawnOrCapture = lastPawnOrCapture;
+
+        Piece &moving = pieces[from];
+        Piece &target = pieces[to];
+
+        m.captured = target;
+        m.prevEnPassant = enPassantSquare;
+        m.pieceHadMoved = moving.hasMoved;
+
+        m.wasCastling = false;
+        m.wasEnPassant = false;
+
+        // en passant
+        if (moving.type == Pawn && to == enPassantSquare)
         {
-            if (movingPiece.isWhite)
-                whiteKing = fromSquare;
-            else
-                blackKing = fromSquare;
+            m.wasEnPassant = true;
+            m.enPassantPawnSquare = moving.isWhite ? to - 8 : to + 8;
+            m.captured = pieces[m.enPassantPawnSquare];
+            pieces[m.enPassantPawnSquare].type = None;
         }
 
-        originalSquare.type = movingPiece.type;
-        originalSquare.isWhite = movingPiece.isWhite;
-        originalSquare.pos = fromSquare;
+        // castling
+        if (moving.type == King && abs(to - from) == 2)
+        {
+            m.wasCastling = true;
 
-        pieces[toSquare] = capturedPiece;
+            if (to > from)
+            {
+                m.rookFrom = from + 3;
+                m.rookTo = from + 1;
+            }
+            else
+            {
+                m.rookFrom = from - 4;
+                m.rookTo = from - 1;
+            }
+
+            m.rookHadMoved = pieces[m.rookFrom].hasMoved;
+
+            pieces[m.rookTo] = pieces[m.rookFrom];
+            pieces[m.rookTo].pos = m.rookTo;
+            pieces[m.rookTo].hasMoved = true;
+            pieces[m.rookFrom].type = None;
+        }
+
+        // king tracking
+        if (moving.type == King)
+        {
+            if (moving.isWhite)
+                whiteKing = to;
+            else
+                blackKing = to;
+        }
+
+        // en passant reset
+        enPassantSquare = -1;
+        if (moving.type == Pawn && abs(to - from) == 16)
+            enPassantSquare = moving.isWhite ? from + 8 : from - 8;
+
+        // move piece
+        pieces[to] = moving;
+        pieces[to].pos = to;
+        pieces[to].hasMoved = true;
+
+        pieces[from].type = None;
+
+        m.wasPromotion = false;
+
+        if (!simulate && pieces[to].type == Pawn)
+        {
+            if ((pieces[to].isWhite && to >= 56) ||
+                (!pieces[to].isWhite && to <= 7))
+            {
+                m.wasPromotion = true;
+                pieces[to].type = Queen;
+            }
+        }
+
+        if (!simulate)
+        {
+            if (moving.type == Pawn || target.type != None || m.wasEnPassant)
+                lastPawnOrCapture = 0;
+            else
+                lastPawnOrCapture++;
+        }
+
+        return m;
+    }
+
+    void unmakeMove(const Move &m)
+    {
+        Piece &moving = pieces[m.to];
+
+        // move back
+        pieces[m.from] = moving;
+        pieces[m.from].pos = m.from;
+        pieces[m.from].hasMoved = m.pieceHadMoved;
+
+        // restore promotion
+        if (m.wasPromotion)
+        {
+            pieces[m.to].type = Pawn;
+        }
+
+        // restore capture
+        pieces[m.to] = m.captured;
+
+        // restore en passant pawn
+        if (m.wasEnPassant)
+        {
+            pieces[m.enPassantPawnSquare] = m.captured;
+            pieces[m.to].type = None;
+        }
+
+        // undo castling
+        if (m.wasCastling)
+        {
+            pieces[m.rookFrom] = pieces[m.rookTo];
+            pieces[m.rookFrom].pos = m.rookFrom;
+            pieces[m.rookFrom].hasMoved = m.rookHadMoved;
+            pieces[m.rookTo].type = None;
+        }
+
+        // restore king pos
+        if (pieces[m.from].type == King)
+        {
+            if (pieces[m.from].isWhite)
+                whiteKing = m.from;
+            else
+                blackKing = m.from;
+        }
+
+        enPassantSquare = m.prevEnPassant;
+
+        whiteKing = m.prevWhiteKing;
+        blackKing = m.prevBlackKing;
+
+        lastPawnOrCapture = m.prevLastPawnOrCapture;
+    }
+
+    Move chooseComputerMove(bool isWhite = false)
+    {
+        std::vector<Move> allMoves;
+
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &piece = pieces[i];
+            if (piece.type == None || piece.isWhite != isWhite)
+                continue;
+
+            std::vector<int> moves = generateLegalMoves(i);
+            for (int to : moves)
+            {
+                Move m;
+                m.from = i;
+                m.to = to;
+                allMoves.push_back(m);
+            }
+        }
+
+        if (allMoves.empty() && !isKingInCheck(isWhite))
+        {
+            checkmate = 2; // stalemate
+        }
+
+        if (allMoves.empty())
+        {
+            checkmate = isWhite ? 0 : 1; // computer lost
+            return Move{-1, -1};
+        }
+
+        int idx = rand() % allMoves.size();
+        Move chosen = allMoves[idx];
+
+        return chosen;
     }
 
     std::vector<int> generateLegalMoves(int square)
@@ -109,12 +278,12 @@ public:
         for (int targetSquare : pseudoLegalMoves)
         {
             Piece capturedPiece = pieces[targetSquare];
+            bool hadMoved = piece.hasMoved;
+            int prevEnPassant = enPassantSquare;
 
-            makeMove(square, targetSquare);
-
+            Move m = makeMove(square, targetSquare, true);
             bool inCheck = isKingInCheck(piece.isWhite);
-
-            unmakeMove(square, targetSquare, capturedPiece);
+            unmakeMove(m);
 
             if (!inCheck)
             {
@@ -124,7 +293,6 @@ public:
 
         return legalMoves;
     }
-
 
     std::vector<int> generatePseudoLegalMoves(int square)
     {
@@ -150,6 +318,43 @@ public:
             break;
         case King:
             moves = generateKingMoves(square, piece.isWhite);
+
+            // Add castling moves here (safe from recursion)
+            if (!piece.hasMoved && !isKingInCheck(piece.isWhite))
+            {
+                // Kingside
+                int kingsideRookSquare = square + 3;
+                if (kingsideRookSquare < 64 && pieces[kingsideRookSquare].type == Rook &&
+                    !pieces[kingsideRookSquare].hasMoved &&
+                    pieces[kingsideRookSquare].isWhite == piece.isWhite)
+                {
+                    if (pieces[square + 1].type == None && pieces[square + 2].type == None)
+                    {
+                        if (!isSquareAttacked(square + 1, !piece.isWhite) &&
+                            !isSquareAttacked(square + 2, !piece.isWhite))
+                        {
+                            moves.push_back(square + 2);
+                        }
+                    }
+                }
+
+                // Queenside
+                int queensideRookSquare = square - 4;
+                if (queensideRookSquare >= 0 && pieces[queensideRookSquare].type == Rook &&
+                    !pieces[queensideRookSquare].hasMoved &&
+                    pieces[queensideRookSquare].isWhite == piece.isWhite)
+                {
+                    if (pieces[square - 1].type == None && pieces[square - 2].type == None &&
+                        pieces[square - 3].type == None)
+                    {
+                        if (!isSquareAttacked(square - 1, !piece.isWhite) &&
+                            !isSquareAttacked(square - 2, !piece.isWhite))
+                        {
+                            moves.push_back(square - 2);
+                        }
+                    }
+                }
+            }
             break;
         case None:
             break;
@@ -195,7 +400,34 @@ public:
             if (piece.type == None || piece.isWhite != byWhite)
                 continue;
 
-            std::vector<int> moves = generatePseudoLegalMoves(i);
+            std::vector<int> moves;
+            if (piece.type == King)
+            {
+                moves = generateKingMoves(i, piece.isWhite);
+            }
+            else
+            {
+                switch (piece.type)
+                {
+                case Pawn:
+                    moves = generatePawnAttacks(i, piece.isWhite);
+                    break;
+                case Knight:
+                    moves = generateKnightMoves(i, piece.isWhite);
+                    break;
+                case Bishop:
+                    moves = generateBishopMoves(i, piece.isWhite);
+                    break;
+                case Rook:
+                    moves = generateRookMoves(i, piece.isWhite);
+                    break;
+                case Queen:
+                    moves = generateQueenMoves(i, piece.isWhite);
+                    break;
+                default:
+                    break;
+                }
+            }
 
             if (std::find(moves.begin(), moves.end(), square) != moves.end())
             {
@@ -209,6 +441,28 @@ public:
     {
         int kingSquare = whiteKing ? this->whiteKing : this->blackKing;
         return isSquareAttacked(kingSquare, !whiteKing);
+    }
+
+    void checkForMate()
+    {
+        if(lastPawnOrCapture >= 100) checkmate = 2;
+
+        bool side = isWhiteTurn;
+
+        if (!isKingInCheck(side))
+            return;
+
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &piece = pieces[i];
+            if (piece.type == None || piece.isWhite != side)
+                continue;
+
+            if (!generateLegalMoves(i).empty())
+                return;
+        }
+
+        checkmate = side ? 1 : 0;
     }
 
 private:
@@ -279,6 +533,25 @@ private:
         }
     }
 
+    void promotePawn(int square, PieceType type)
+    {
+        Piece& piece = pieces[square];
+
+        if(square < 56 && piece.isWhite == true) 
+            return;
+        
+        if(square > 7 && piece.isWhite == false) 
+            return;
+
+        if(piece.type != Pawn)
+            return;
+        
+        if(type != Pawn && type != King && type != None)
+        {
+            piece.type = type;
+        }
+    }
+
 public:
     std::vector<int> generatePawnMoves(int square, bool isWhite)
     {
@@ -287,7 +560,9 @@ public:
         int rank = getRank(square);
         int direction = isWhite ? 1 : -1;
         int startRank = isWhite ? 1 : 6;
+        int enPassantRank = isWhite ? 4 : 3; // Rank where en passant can happen
 
+        // Forward move
         int forward = square + (direction * 8);
         if (forward >= 0 && forward <= 63 && pieces[forward].type == None)
         {
@@ -324,6 +599,36 @@ public:
             }
         }
 
+        // En passant
+        if (rank == enPassantRank && enPassantSquare != -1)
+        {
+            if (file > 0 && captureLeft == enPassantSquare)
+            {
+                moves.push_back(enPassantSquare);
+            }
+            if (file < 7 && captureRight == enPassantSquare)
+            {
+                moves.push_back(enPassantSquare);
+            }
+        }
+
+        return moves;
+    }
+
+    std::vector<int> generatePawnAttacks(int square, bool isWhite)
+    {
+        std::vector<int> moves;
+        int file = getFile(square);
+        int dir = isWhite ? 1 : -1;
+
+        int left = square + dir * 8 - 1;
+        int right = square + dir * 8 + 1;
+
+        if (file > 0 && left >= 0 && left < 64)
+            moves.push_back(left);
+        if (file < 7 && right >= 0 && right < 64)
+            moves.push_back(right);
+
         return moves;
     }
 
@@ -333,23 +638,21 @@ public:
         int file = getFile(square);
         int rank = getRank(square);
 
-        int offsets[8] = {17, 15, 10, 6, -6, -10, -15, -17};
-        int fileChanges[8] = {1, -1, 2, -2, -2, 2, -1, 1};
-        int rankChanges[8] = {2, 2, 1, 1, -1, -1, -2, -2};
+        int fileDiff[8] = {1, -1, 2, -2, 2, -2, 1, -1};
+        int rankRiff[8] = {2, 2, 1, 1, -1, -1, -2, -2};
 
         for (int i = 0; i < 8; i++)
         {
-            int newSquare = square + offsets[i];
-            int newFile = file + fileChanges[i];
-            int newRank = rank + rankChanges[i];
+            int newFile = file + fileDiff[i];
+            int newRank = rank + rankRiff[i];
 
-            if (newFile >= 0 && newFile <= 7 && newRank >= 0 && newRank <= 7)
-            {
-                if (isValidMove(newSquare, isWhite))
-                {
-                    moves.push_back(newSquare);
-                }
-            }
+            if (newFile < 0 || newFile > 7 || newRank < 0 || newRank > 7)
+                continue;
+
+            int newSquare = newRank * 8 + newFile;
+
+            if (isValidMove(newSquare, isWhite))
+                moves.push_back(newSquare);
         }
 
         return moves;

@@ -22,6 +22,13 @@ public:
     bool hasMoved;
     uint8_t pos;
 
+    Piece()
+    {
+        type = None;
+        isWhite = true;
+        hasMoved = false;
+    }
+
     Piece(const PieceType _type, bool white, const uint8_t _pos)
     {
         type = _type;
@@ -101,3 +108,36 @@ std::vector<Piece> loadFenString(const char *fen)
 
     return pieces;
 }
+
+struct Move
+{
+    int from;
+    int to;
+
+    Piece captured;
+
+    int prevEnPassant;
+
+    bool pieceHadMoved;
+
+    bool wasCastling;
+    int rookFrom;
+    int rookTo;
+    bool rookHadMoved;
+
+    bool wasEnPassant;
+    int enPassantPawnSquare;
+
+    bool wasPromotion;
+    PieceType promotedFrom;
+
+    int prevWhiteKing;
+    int prevBlackKing;
+
+    int prevLastPawnOrCapture;
+
+    Move(int from = -1, int to = -1)
+    {
+
+    }
+};

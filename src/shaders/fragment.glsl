@@ -6,7 +6,7 @@ uniform vec2 screenRes;
 uniform float boardSize;
 
 uniform vec3 whiteColour, blackColour;
-uniform vec3 selectedWhiteColour, selectedBlackColour;
+uniform vec3 selectedColour;
 
 uniform int selectedSquare;
 
@@ -46,13 +46,15 @@ void main()
             }
         }
 
-        colour = vec3(isSelected ? 
-        (isWhite ? selectedWhiteColour : selectedBlackColour) : 
-        (isWhite ? whiteColour : blackColour));
+        colour = vec3((isWhite ? whiteColour : blackColour));
 
-        if(isLegalMove)
+        if(isSelected)
         {
-            colour = mix(colour, vec3(0.3, 0.8, 0.3), 0.4);
+            colour = mix(colour, selectedColour, 0.7);
+        }
+        else if(isLegalMove)
+        {
+            colour = mix(colour, vec3(0.919, 0.250, 0.299), 0.6);
         }
     }
 
