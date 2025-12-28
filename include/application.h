@@ -18,10 +18,8 @@ public:
         {
             window.processInput();
 
-            std::cout << board.lastPawnOrCapture << std::endl;
-            //board.handleInput(window, renderer.smallestDimension);
-
-            board.moveComputer(true);
+            board.handleInput(window, renderer.smallestDimension);
+            //board.moveComputer(true);
 
             if(board.checkmate >= 0)
             {
@@ -30,9 +28,9 @@ public:
                 if(board.checkmate == 2)
                     std::cout << "STALEMATE" << std::endl;
                 else if(board.checkmate == 1)
-                    std::cout << "MATE FOR WHITE" << std::endl;
-                else
                     std::cout << "MATE FOR BLACK" << std::endl;
+                else
+                    std::cout << "MATE FOR WHITE" << std::endl;
             }
 
             board.moveComputer(false);
@@ -44,9 +42,9 @@ public:
                 if (board.checkmate == 2)
                     std::cout << "STALEMATE" << std::endl;
                 else if (board.checkmate == 1)
-                    std::cout << "MATE FOR WHITE" << std::endl;
-                else
                     std::cout << "MATE FOR BLACK" << std::endl;
+                else
+                    std::cout << "MATE FOR WHITE" << std::endl;
             }
 
             renderer.beginFrame();

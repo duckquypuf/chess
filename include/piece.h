@@ -14,6 +14,19 @@ enum PieceType
     King = 5,
 };
 
+namespace PieceData
+{
+    enum PieceValue
+    {
+        PawnValue = 100,
+        KnightValue = 300,
+        BishopValue = 300,
+        RookValue = 500,
+        QueenValue = 900,
+        KingValue = 10000,
+    };
+};
+
 class Piece
 {
 public:

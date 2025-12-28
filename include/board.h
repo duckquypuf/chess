@@ -3,10 +3,14 @@
 #include "piece.h"
 #include <algorithm>
 
+#include <map>
+#include <string>
+
 class Board
 {
 public:
     std::vector<Piece> pieces = loadFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+    std::map<std::string, int> positionHistory;
     int selectedSquare = -1;
     int enPassantSquare = -1;
     bool isWhiteTurn = true;
@@ -23,6 +27,61 @@ public:
     Board()
     {
         findKings();
+        recordPosition();
+    }
+
+    void recordPosition()
+    {
+        std::string hash = getPositionHash();
+        positionHistory[hash]++;
+    }
+
+    bool isThreefoldRepetition()
+    {
+        std::string hash = getPositionHash();
+        return positionHistory[hash] >= 3;
+    }
+
+    void clearPositionHistory()
+    {
+        positionHistory.clear();
+    }
+
+    std::string getPositionHash()
+    {
+        std::string hash = "";
+
+        // Add piece positions
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &p = pieces[i];
+            if (p.type == None)
+            {
+                hash += ".";
+            }
+            else
+            {
+                // Format: piece type + color (e.g., "P0" = white pawn, "p1" = black pawn)
+                hash += std::to_string(p.type);
+                hash += p.isWhite ? "0" : "1";
+            }
+        }
+
+        // Add turn (critical - same position but different turn is different)
+        hash += isWhiteTurn ? "W" : "B";
+
+        // Add castling rights
+        hash += pieces[0].hasMoved ? "0" : "1";         // White queenside rook
+        hash += pieces[7].hasMoved ? "0" : "1";         // White kingside rook
+        hash += pieces[56].hasMoved ? "0" : "1";        // Black queenside rook
+        hash += pieces[63].hasMoved ? "0" : "1";        // Black kingside rook
+        hash += pieces[whiteKing].hasMoved ? "0" : "1"; // White king
+        hash += pieces[blackKing].hasMoved ? "0" : "1"; // Black king
+
+        // Add en passant square
+        hash += "_" + std::to_string(enPassantSquare);
+
+        return hash;
     }
 
     void handleInput(Window &window, float boardSize)
@@ -150,6 +209,21 @@ public:
         if (moving.type == Pawn && abs(to - from) == 16)
             enPassantSquare = moving.isWhite ? from + 8 : from - 8;
 
+        if (!simulate)
+        {
+            if (moving.type == Pawn || target.type != None || m.wasEnPassant)
+            {
+                lastPawnOrCapture = 0;
+                clearPositionHistory(); // Pawn move or capture resets repetition
+            }
+            else
+            {
+                lastPawnOrCapture++;
+            }
+
+            recordPosition(); // Record the new position
+        }
+
         // move piece
         pieces[to] = moving;
         pieces[to].pos = to;
@@ -169,19 +243,15 @@ public:
             }
         }
 
-        if (!simulate)
-        {
-            if (moving.type == Pawn || target.type != None || m.wasEnPassant)
-                lastPawnOrCapture = 0;
-            else
-                lastPawnOrCapture++;
-        }
-
         return m;
     }
 
     void unmakeMove(const Move &m)
     {
+        std::string hash = getPositionHash();
+        if (positionHistory[hash] > 0)
+            positionHistory[hash]--;
+
         Piece &moving = pieces[m.to];
 
         // move back
@@ -254,9 +324,7 @@ public:
         if (allMoves.empty() && !isKingInCheck(isWhite))
         {
             checkmate = 2; // stalemate
-        }
-
-        if (allMoves.empty())
+        } else if (allMoves.empty())
         {
             checkmate = isWhite ? 0 : 1; // computer lost
             return Move{-1, -1};
@@ -445,12 +513,21 @@ public:
 
     void checkForMate()
     {
-        if(lastPawnOrCapture >= 100) checkmate = 2;
+        if (lastPawnOrCapture >= 100)
+        {
+            checkmate = 2; // Draw by 50-move rule
+            return;
+        }
+
+        if (isThreefoldRepetition())
+        {
+            checkmate = 2; // Draw by repetition
+            return;
+        }
 
         bool side = isWhiteTurn;
 
-        if (!isKingInCheck(side))
-            return;
+        bool hasMove = false;
 
         for (int i = 0; i < 64; i++)
         {
@@ -459,10 +536,18 @@ public:
                 continue;
 
             if (!generateLegalMoves(i).empty())
-                return;
+            {
+                hasMove = true;
+                break;
+            }
         }
 
-        checkmate = side ? 1 : 0;
+        if (hasMove) return;
+
+        if (isKingInCheck(side))
+            checkmate = side ? 1 : 0; // checkmate
+        else
+            checkmate = 2; // stalemate
     }
 
 private:
