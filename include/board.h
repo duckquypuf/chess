@@ -1,10 +1,12 @@
 #pragma once
 
+#include "window.h"
 #include "piece.h"
 #include <algorithm>
 
 #include <map>
 #include <string>
+#include <vector>
 
 class Board
 {
@@ -23,6 +25,20 @@ public:
     int checkmate = -1;
 
     int lastPawnOrCapture = 0;
+
+    std::vector<Piece *> pawns[2];
+    std::vector<Piece *> rooks[2];
+    std::vector<Piece *> knights[2];
+    std::vector<Piece *> bishops[2];
+    std::vector<Piece *> queens[2];
+    std::vector<Piece *> kings[2];
+
+    std::vector<int> attackedSquares[2]; // [0] = white attacks, [1] = black attacks
+    std::vector<int> pinnedPieces;       // Squares of pinned pieces
+    std::vector<int> pinRays[64];        // For each pinned piece, which squares it can move to
+
+    std::vector<int> checkingPieces; // Pieces giving check
+    std::vector<int> blockSquares;   // Squares that block check (empty if double check)
 
     Board()
     {
@@ -45,6 +61,54 @@ public:
     void clearPositionHistory()
     {
         positionHistory.clear();
+    }
+
+    int evaluateBoard()
+    {
+        if (checkmate == 0)
+            return 100000; // White wins
+        if (checkmate == 1)
+            return -100000; // Black wins
+        if (checkmate == 2)
+            return 0; // Draw
+
+        int score = 0;
+
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &p = pieces[i];
+            if (p.type == None)
+                continue;
+
+            int pieceValue = 0;
+            switch (p.type)
+            {
+            case Pawn:
+                pieceValue = PieceData::PawnValue;
+                break;
+            case Knight:
+                pieceValue = PieceData::KnightValue;
+                break;
+            case Bishop:
+                pieceValue = PieceData::BishopValue;
+                break;
+            case Rook:
+                pieceValue = PieceData::RookValue;
+                break;
+            case Queen:
+                pieceValue = PieceData::QueenValue;
+                break;
+            case King:
+                pieceValue = PieceData::KingValue;
+                break;
+            default:
+                break;
+            }
+
+            score += p.isWhite ? pieceValue : -pieceValue;
+        }
+
+        return score;
     }
 
     std::string getPositionHash()
@@ -301,7 +365,157 @@ public:
         lastPawnOrCapture = m.prevLastPawnOrCapture;
     }
 
-    Move chooseComputerMove(bool isWhite = false)
+    int scoreMove(const Move &move)
+    {
+        int score = 0;
+
+        Piece &moving = pieces[move.from];
+        Piece &target = pieces[move.to];
+
+        // 1. Prioritize captures (MVV-LVA: Most Valuable Victim - Least Valuable Attacker)
+        if (target.type != None)
+        {
+            int victimValue = 0;
+            int attackerValue = 0;
+
+            switch (target.type)
+            {
+            case Pawn:
+                victimValue = PieceData::PawnValue;
+                break;
+            case Knight:
+                victimValue = PieceData::KnightValue;
+                break;
+            case Bishop:
+                victimValue = PieceData::BishopValue;
+                break;
+            case Rook:
+                victimValue = PieceData::RookValue;
+                break;
+            case Queen:
+                victimValue = PieceData::QueenValue;
+                break;
+            case King:
+                victimValue = PieceData::KingValue;
+                break;
+            default:
+                break;
+            }
+
+            switch (moving.type)
+            {
+            case Pawn:
+                attackerValue = PieceData::PawnValue;
+                break;
+            case Knight:
+                attackerValue = PieceData::KnightValue;
+                break;
+            case Bishop:
+                attackerValue = PieceData::BishopValue;
+                break;
+            case Rook:
+                attackerValue = PieceData::RookValue;
+                break;
+            case Queen:
+                attackerValue = PieceData::QueenValue;
+                break;
+            case King:
+                attackerValue = PieceData::KingValue;
+                break;
+            default:
+                break;
+            }
+
+            // High value victim captured by low value attacker = good!
+            score += 10000 + victimValue - attackerValue;
+        }
+
+        // 2. Promotions are great
+        if (moving.type == Pawn)
+        {
+            if ((moving.isWhite && move.to >= 56) || (!moving.isWhite && move.to <= 7))
+            {
+                score += PieceData::QueenValue; // Promotion value
+            }
+        }
+
+        // 3. Center control (e4, d4, e5, d5)
+        int file = move.to % 8;
+        int rank = move.to / 8;
+        if ((file == 3 || file == 4) && (rank == 3 || rank == 4))
+        {
+            score += 50;
+        }
+
+        return score;
+    }
+
+    int alphaBeta(int depth, int alpha, int beta, bool maximizingPlayer)
+    {
+        if (depth == 0 || checkmate >= 0)
+            return evaluateBoard();
+
+        // Generate all moves
+        std::vector<Move> allMoves;
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &piece = pieces[i];
+            if (piece.type == None || piece.isWhite != maximizingPlayer)
+                continue;
+
+            std::vector<int> moves = generateLegalMoves(i);
+            for (int to : moves)
+            {
+                Move m;
+                m.from = i;
+                m.to = to;
+                allMoves.push_back(m);
+            }
+        }
+
+        std::sort(allMoves.begin(), allMoves.end(),
+                  [this](const Move &a, const Move &b)
+                  {
+                      return scoreMove(a) > scoreMove(b);
+                  });
+
+        if (maximizingPlayer)
+        {
+            int maxEval = -999999;
+            for (Move &move : allMoves)
+            {
+                Move m = makeMove(move.from, move.to, true);
+                int eval = alphaBeta(depth - 1, alpha, beta, false);
+                unmakeMove(m);
+
+                maxEval = std::max(maxEval, eval);
+                alpha = std::max(alpha, eval);
+
+                if (beta <= alpha)
+                    break;
+            }
+            return maxEval;
+        }
+        else
+        {
+            int minEval = 999999;
+            for (Move &move : allMoves)
+            {
+                Move m = makeMove(move.from, move.to, true);
+                int eval = alphaBeta(depth - 1, alpha, beta, true);
+                unmakeMove(m);
+
+                minEval = std::min(minEval, eval);
+                beta = std::min(beta, eval);
+
+                if (beta <= alpha)
+                    break;
+            }
+            return minEval;
+        }
+    }
+
+    Move chooseComputerMove(bool isWhite)
     {
         std::vector<Move> allMoves;
 
@@ -321,19 +535,39 @@ public:
             }
         }
 
-        if (allMoves.empty() && !isKingInCheck(isWhite))
+        if (allMoves.empty())
         {
-            checkmate = 2; // stalemate
-        } else if (allMoves.empty())
-        {
-            checkmate = isWhite ? 0 : 1; // computer lost
+            if (!isKingInCheck(isWhite))
+                checkmate = 2;
+            else
+                checkmate = isWhite ? 0 : 1;
             return Move{-1, -1};
         }
 
-        int idx = rand() % allMoves.size();
-        Move chosen = allMoves[idx];
+        std::sort(allMoves.begin(), allMoves.end(),
+                  [this](const Move &a, const Move &b)
+                  {
+                      return scoreMove(a) > scoreMove(b);
+                  });
 
-        return chosen;
+        int bestScore = isWhite ? -999999 : 999999;
+        Move bestMove = allMoves[0];
+        int searchDepth = 3;
+
+        for (Move &move : allMoves)
+        {
+            Move m = makeMove(move.from, move.to, true);
+            int score = alphaBeta(searchDepth - 1, -999999, 999999, !isWhite);
+            unmakeMove(m);
+
+            if ((isWhite && score > bestScore) || (!isWhite && score < bestScore))
+            {
+                bestScore = score;
+                bestMove = move;
+            }
+        }
+
+        return bestMove;
     }
 
     std::vector<int> generateLegalMoves(int square)
@@ -457,6 +691,55 @@ public:
             if (foundWhite && foundBlack)
                 break;
         }
+    }
+
+    void findPieces()
+    {
+        pawns[0].clear();
+        pawns[1].clear();
+        rooks[0].clear();
+        rooks[1].clear();
+        knights[0].clear();
+        knights[1].clear();
+        bishops[0].clear();
+        bishops[1].clear();
+        queens[0].clear();
+        queens[1].clear();
+        kings[0].clear();
+        kings[1].clear();
+
+        for (auto &p : pieces)
+        {
+            int c = p.isWhite ? 0 : 1;
+            switch (p.type)
+            {
+            case PieceType::Pawn:
+                pawns[c].push_back(&p);
+                break;
+            case PieceType::Rook:
+                rooks[c].push_back(&p);
+                break;
+            case PieceType::Knight:
+                knights[c].push_back(&p);
+                break;
+            case PieceType::Bishop:
+                bishops[c].push_back(&p);
+                break;
+            case PieceType::Queen:
+                queens[c].push_back(&p);
+                break;
+            case PieceType::King:
+                kings[c].push_back(&p);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    void updatePieces()
+    {
+        findPieces(); // just call this whenever pieces move/capture
     }
 
     bool isSquareAttacked(int square, bool byWhite)

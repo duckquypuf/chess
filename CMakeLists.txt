@@ -10,11 +10,12 @@ find_package(glfw3 REQUIRED)
 include_directories(include src thirdparty)
 
 file(GLOB IMGUI_SOURCES
-    include/imgui/*.cpp
+    thirdparty/imgui/*.cpp
 )
 
 add_executable(chess
-    src/main.cpp
+    #src/main.cpp
+    src/main_debug.cpp
     src/stb_impl.cpp
     thirdparty/glad.c
     ${IMGUI_SOURCES}
