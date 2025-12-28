@@ -13,6 +13,12 @@
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/include/move_generator.cpp.o -c /Users/owaismacbook/Documents/chessCpp/include/move_generator.cpp",
+  "file": "/Users/owaismacbook/Documents/chessCpp/include/move_generator.cpp",
+  "output": "CMakeFiles/chess.dir/include/move_generator.cpp.o"
+},
+{
+  "directory": "/Users/owaismacbook/Documents/chessCpp/build",
   "command": "/usr/bin/clang  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/glad.c.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/glad.c",
   "file": "/Users/owaismacbook/Documents/chessCpp/thirdparty/glad.c",
   "output": "CMakeFiles/chess.dir/thirdparty/glad.c.o"

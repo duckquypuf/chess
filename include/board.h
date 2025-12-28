@@ -12,10 +12,10 @@
 class Board
 {
 public:
-    std::vector<Piece> pieces = loadFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+    std::vector<Piece> pieces = loadFenString("rnbqkbnr/8/8/8/8/8/8/RNBQKBNR");
     int selectedSquare = -1;
     bool isWhiteTurn = true;
-    std::vector<Move> legalMoves;
+    std::vector<int> legalMoves;
     bool isDragging = false;
 
     int whiteKing = -1;

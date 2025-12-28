@@ -50,23 +50,23 @@ namespace PieceData
         KingValue = 10000,
     };
 
-    bool IsRookOrQueen(PieceType piece)
+    constexpr bool IsRookOrQueen(PieceType piece)
     {
         return piece == Rook || piece == Queen;
     }
 
-    bool IsBishopOrQueen(PieceType piece)
+    constexpr bool IsBishopOrQueen(PieceType piece)
     {
         return piece == Bishop || piece == Queen;
     }
 
-    bool IsSlidingPiece(PieceType piece)
+    constexpr bool IsSlidingPiece(PieceType piece)
     {
         return piece == Bishop || piece == Rook || piece == Queen;
     }
 };
 
-std::vector<Piece> loadFenString(const char *fen)
+inline std::vector<Piece> loadFenString(const char *fen)
 {
     std::vector<Piece> pieces;
 

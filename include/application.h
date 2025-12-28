@@ -14,6 +14,8 @@ public:
 
     void run()
     {
+        MoveGen::precomputeMoveData();
+
         while(!glfwWindowShouldClose(window.window))
         {
             window.processInput();

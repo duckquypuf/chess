@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/owaismacbook/Documents/chessCpp/thirdparty/glad.c" "CMakeFiles/chess.dir/thirdparty/glad.c.o" "gcc" "CMakeFiles/chess.dir/thirdparty/glad.c.o.d"
+  "/Users/owaismacbook/Documents/chessCpp/include/move_generator.cpp" "CMakeFiles/chess.dir/include/move_generator.cpp.o" "gcc" "CMakeFiles/chess.dir/include/move_generator.cpp.o.d"
   "/Users/owaismacbook/Documents/chessCpp/src/main.cpp" "CMakeFiles/chess.dir/src/main.cpp.o" "gcc" "CMakeFiles/chess.dir/src/main.cpp.o.d"
   "/Users/owaismacbook/Documents/chessCpp/src/stb_impl.cpp" "CMakeFiles/chess.dir/src/stb_impl.cpp.o" "gcc" "CMakeFiles/chess.dir/src/stb_impl.cpp.o.d"
   "/Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui.cpp" "CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o" "gcc" "CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o.d"

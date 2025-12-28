@@ -85,12 +85,12 @@ clean: CMakeFiles/chess.dir/clean
 CMakeFiles/chess.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11 "Built target chess"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12 "Built target chess"
 .PHONY : CMakeFiles/chess.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/chess.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/owaismacbook/Documents/chessCpp/build/CMakeFiles 11
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/owaismacbook/Documents/chessCpp/build/CMakeFiles 12
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/chess.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/owaismacbook/Documents/chessCpp/build/CMakeFiles 0
 .PHONY : CMakeFiles/chess.dir/rule
@@ -102,7 +102,7 @@ chess: CMakeFiles/chess.dir/rule
 # codegen rule for target.
 CMakeFiles/chess.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11 "Finished codegen for target chess"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12 "Finished codegen for target chess"
 .PHONY : CMakeFiles/chess.dir/codegen
 
 # clean rule for target.
