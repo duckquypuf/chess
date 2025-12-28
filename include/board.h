@@ -63,6 +63,290 @@ public:
         positionHistory.clear();
     }
 
+    void computeAttackData(bool forWhite)
+    {
+        int colorIdx = forWhite ? 0 : 1;
+        attackedSquares[colorIdx].clear();
+
+        // Generate attacked squares for all pieces of this color
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &piece = pieces[i];
+            if (piece.type == None || piece.isWhite != forWhite)
+                continue;
+
+            std::vector<int> attacks = generateAttacks(i, piece.type, forWhite);
+
+            // Add to attacked squares (use set or check for duplicates if needed)
+            for (int sq : attacks)
+            {
+                attackedSquares[colorIdx].push_back(sq);
+            }
+        }
+    }
+
+    bool isSquareAttackedFast(int square, bool byWhite)
+    {
+        int colorIdx = byWhite ? 0 : 1;
+        return std::find(attackedSquares[colorIdx].begin(),
+                         attackedSquares[colorIdx].end(),
+                         square) != attackedSquares[colorIdx].end();
+    }
+
+    std::vector<int> generateAttacks(int square, PieceType type, bool isWhite)
+    {
+        switch (type)
+        {
+        case Pawn:
+            return generatePawnAttacks(square, isWhite);
+        case Knight:
+            return generateKnightMoves(square, isWhite);
+        case Bishop:
+            return generateBishopMoves(square, isWhite);
+        case Rook:
+            return generateRookMoves(square, isWhite);
+        case Queen:
+            return generateQueenMoves(square, isWhite);
+        case King:
+            return generateKingMoves(square, isWhite);
+        default:
+            return {};
+        }
+    }
+
+    // Detect pins and checks
+    void computePinsAndChecks(bool forWhite)
+    {
+        pinnedPieces.clear();
+        checkingPieces.clear();
+        blockSquares.clear();
+
+        for (int i = 0; i < 64; i++)
+            pinRays[i].clear();
+
+        int kingSquare = forWhite ? whiteKing : blackKing;
+        bool enemyColor = !forWhite;
+
+        // Check all sliding pieces (bishops, rooks, queens)
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &piece = pieces[i];
+            if (piece.type == None || piece.isWhite != enemyColor)
+                continue;
+
+            // Only check sliding pieces
+            if (piece.type != Bishop && piece.type != Rook && piece.type != Queen)
+                continue;
+
+            // Check if this piece can see the king
+            std::vector<int> ray = getRayToKing(i, kingSquare, piece.type);
+
+            if (!ray.empty())
+            {
+                // Count pieces between attacker and king
+                int piecesInWay = 0;
+                int pinnedSquare = -1;
+
+                for (int sq : ray)
+                {
+                    if (pieces[sq].type != None)
+                    {
+                        piecesInWay++;
+                        pinnedSquare = sq;
+                    }
+                }
+
+                if (piecesInWay == 0)
+                {
+                    // Direct check
+                    checkingPieces.push_back(i);
+                    blockSquares = ray; // Can block along this ray
+                }
+                else if (piecesInWay == 1 && pieces[pinnedSquare].isWhite == forWhite)
+                {
+                    // Pinned piece
+                    pinnedPieces.push_back(pinnedSquare);
+                    pinRays[pinnedSquare] = ray;
+                    pinRays[pinnedSquare].push_back(i); // Can capture attacker
+                }
+            }
+        }
+
+        // Check knights for direct checks (can't pin)
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &piece = pieces[i];
+            if (piece.type == Knight && piece.isWhite == enemyColor)
+            {
+                std::vector<int> moves = generateKnightMoves(i, enemyColor);
+                if (std::find(moves.begin(), moves.end(), kingSquare) != moves.end())
+                {
+                    checkingPieces.push_back(i);
+                    // Knights can't be blocked, only captured
+                    blockSquares.push_back(i);
+                }
+            }
+        }
+
+        // Check pawns for direct checks
+        for (int i = 0; i < 64; i++)
+        {
+            Piece &piece = pieces[i];
+            if (piece.type == Pawn && piece.isWhite == enemyColor)
+            {
+                std::vector<int> attacks = generatePawnAttacks(i, enemyColor);
+                if (std::find(attacks.begin(), attacks.end(), kingSquare) != attacks.end())
+                {
+                    checkingPieces.push_back(i);
+                    blockSquares.push_back(i); // Can only capture
+                }
+            }
+        }
+    }
+
+    // Get ray from attacker to king (returns empty if no line of sight)
+    std::vector<int> getRayToKing(int from, int kingPos, PieceType attackerType)
+    {
+        std::vector<int> ray;
+
+        int fileFrom = from % 8;
+        int rankFrom = from / 8;
+        int fileKing = kingPos % 8;
+        int rankKing = kingPos / 8;
+
+        int fileDiff = fileKing - fileFrom;
+        int rankDiff = rankKing - rankFrom;
+
+        // Determine direction
+        int direction = 0;
+
+        // Rook/Queen horizontal/vertical
+        if (fileDiff == 0 && rankDiff != 0)
+            direction = (rankDiff > 0) ? 8 : -8;
+        else if (rankDiff == 0 && fileDiff != 0)
+            direction = (fileDiff > 0) ? 1 : -1;
+        // Bishop/Queen diagonal
+        else if (abs(fileDiff) == abs(rankDiff))
+        {
+            if (fileDiff > 0 && rankDiff > 0)
+                direction = 9;
+            else if (fileDiff > 0 && rankDiff < 0)
+                direction = -7;
+            else if (fileDiff < 0 && rankDiff > 0)
+                direction = 7;
+            else if (fileDiff < 0 && rankDiff < 0)
+                direction = -9;
+        }
+
+        if (direction == 0)
+            return {}; // No line of sight
+
+        // Check if piece type can move in this direction
+        if (attackerType == Rook && (direction == 9 || direction == 7 || direction == -7 || direction == -9))
+            return {};
+        if (attackerType == Bishop && (direction == 8 || direction == -8 || direction == 1 || direction == -1))
+            return {};
+
+        // Build ray (excluding attacker and king)
+        int current = from + direction;
+        while (current != kingPos && current >= 0 && current < 64)
+        {
+            ray.push_back(current);
+            current += direction;
+
+            // Check for board wrap
+            int currentFile = current % 8;
+            int prevFile = (current - direction) % 8;
+            if (abs(currentFile - prevFile) > 1)
+                break;
+        }
+
+        if (current == kingPos)
+            return ray;
+
+        return {}; // Didn't reach king
+    }
+
+    // FAST legal move generation using pre-computed data
+    std::vector<int> generateLegalMovesFast(int square)
+    {
+        Piece &piece = pieces[square];
+        if (piece.type == None)
+            return {};
+
+        // Pre-compute attack data if not done
+        computeAttackData(!piece.isWhite);
+        computePinsAndChecks(piece.isWhite);
+
+        std::vector<int> pseudoLegal = generatePseudoLegalMoves(square);
+        std::vector<int> legal;
+
+        int kingSquare = piece.isWhite ? whiteKing : blackKing;
+        bool inCheck = !checkingPieces.empty();
+        bool isDoubleCheck = checkingPieces.size() > 1;
+
+        // King moves - must not move into attack
+        if (piece.type == King)
+        {
+            for (int move : pseudoLegal)
+            {
+                // Simulate king move temporarily
+                Piece temp = pieces[move];
+                pieces[move] = piece;
+                pieces[square].type = None;
+
+                // Recompute attacks without this king position
+                computeAttackData(!piece.isWhite);
+                bool safe = !isSquareAttackedFast(move, !piece.isWhite);
+
+                // Restore
+                pieces[square] = piece;
+                pieces[move] = temp;
+
+                if (safe)
+                    legal.push_back(move);
+            }
+            return legal;
+        }
+
+        // Double check - only king moves allowed
+        if (isDoubleCheck)
+            return {};
+
+        // Check if this piece is pinned
+        bool isPinned = std::find(pinnedPieces.begin(), pinnedPieces.end(), square) != pinnedPieces.end();
+
+        if (isPinned)
+        {
+            // Can only move along pin ray
+            for (int move : pseudoLegal)
+            {
+                if (std::find(pinRays[square].begin(), pinRays[square].end(), move) != pinRays[square].end())
+                {
+                    legal.push_back(move);
+                }
+            }
+        }
+        else if (inCheck)
+        {
+            // Must block or capture checking piece
+            for (int move : pseudoLegal)
+            {
+                if (std::find(blockSquares.begin(), blockSquares.end(), move) != blockSquares.end())
+                {
+                    legal.push_back(move);
+                }
+            }
+        }
+        else
+        {
+            // Not in check, not pinned - all pseudo-legal moves are legal
+            legal = pseudoLegal;
+        }
+
+        return legal;
+    }
+
     int evaluateBoard()
     {
         if (checkmate == 0)
