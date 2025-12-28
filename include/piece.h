@@ -14,19 +14,6 @@ enum PieceType
     King = 5,
 };
 
-namespace PieceData
-{
-    enum PieceValue
-    {
-        PawnValue = 100,
-        KnightValue = 300,
-        BishopValue = 300,
-        RookValue = 500,
-        QueenValue = 900,
-        KingValue = 10000,
-    };
-};
-
 class Piece
 {
 public:
@@ -48,6 +35,34 @@ public:
         isWhite = white;
         pos = _pos;
         hasMoved = false;
+    }
+};
+
+namespace PieceData
+{
+    enum PieceValue
+    {
+        PawnValue = 100,
+        KnightValue = 300,
+        BishopValue = 300,
+        RookValue = 500,
+        QueenValue = 900,
+        KingValue = 10000,
+    };
+
+    bool IsRookOrQueen(PieceType piece)
+    {
+        return piece == Rook || piece == Queen;
+    }
+
+    bool IsBishopOrQueen(PieceType piece)
+    {
+        return piece == Bishop || piece == Queen;
+    }
+
+    bool IsSlidingPiece(PieceType piece)
+    {
+        return piece == Bishop || piece == Rook || piece == Queen;
     }
 };
 
@@ -121,36 +136,3 @@ std::vector<Piece> loadFenString(const char *fen)
 
     return pieces;
 }
-
-struct Move
-{
-    int from;
-    int to;
-
-    Piece captured;
-
-    int prevEnPassant;
-
-    bool pieceHadMoved;
-
-    bool wasCastling;
-    int rookFrom;
-    int rookTo;
-    bool rookHadMoved;
-
-    bool wasEnPassant;
-    int enPassantPawnSquare;
-
-    bool wasPromotion;
-    PieceType promotedFrom;
-
-    int prevWhiteKing;
-    int prevBlackKing;
-
-    int prevLastPawnOrCapture;
-
-    Move(int from = -1, int to = -1)
-    {
-
-    }
-};

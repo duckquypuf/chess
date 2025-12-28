@@ -4,6 +4,8 @@
 #include <chrono>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <ctime>
 
 struct TestPosition
 {
@@ -145,5 +147,182 @@ public:
         char file = 'a' + (square % 8);
         char rank = '1' + (square / 8);
         return std::string(1, file) + std::string(1, rank);
+    }
+
+    void exportToJSON(const std::string &filename)
+    {
+        std::ofstream file(filename);
+
+        if (!file.is_open())
+        {
+            std::cerr << "Failed to open file: " << filename << std::endl;
+            return;
+        }
+
+        // Get timestamp
+        std::time_t now = std::time(nullptr);
+        char timestamp[100];
+        std::strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+
+        file << "{\n";
+        file << "  \"timestamp\": \"" << timestamp << "\",\n";
+        file << "  \"total_tests\": " << testResults.size() << ",\n";
+        file << "  \"results\": [\n";
+
+        for (size_t i = 0; i < testResults.size(); i++)
+        {
+            const TestResult &r = testResults[i];
+
+            file << "    {\n";
+            file << "      \"position\": \"" << r.positionName << "\",\n";
+            file << "      \"depth\": " << r.depth << ",\n";
+            file << "      \"best_move_from\": " << r.bestMoveFrom << ",\n";
+            file << "      \"best_move_to\": " << r.bestMoveTo << ",\n";
+            file << "      \"best_move_algebraic\": \"" << squareToAlgebraic(r.bestMoveFrom)
+                 << " -> " << squareToAlgebraic(r.bestMoveTo) << "\",\n";
+            file << "      \"evaluation\": " << r.evaluation << ",\n";
+            file << "      \"time_ms\": " << std::fixed << std::setprecision(2) << r.timeMs << "\n";
+            file << "    }";
+
+            if (i < testResults.size() - 1)
+                file << ",";
+
+            file << "\n";
+        }
+
+        file << "  ],\n";
+
+        // Calculate summary statistics
+        file << "  \"summary\": {\n";
+
+        // Find max depth
+        int maxDepth = 0;
+        for (const auto &r : testResults)
+            maxDepth = std::max(maxDepth, r.depth);
+
+        // Stats per depth
+        for (int depth = 1; depth <= maxDepth; depth++)
+        {
+            double totalTime = 0.0;
+            int count = 0;
+
+            for (const auto &r : testResults)
+            {
+                if (r.depth == depth)
+                {
+                    totalTime += r.timeMs;
+                    count++;
+                }
+            }
+
+            if (count > 0)
+            {
+                file << "    \"depth_" << depth << "\": {\n";
+                file << "      \"avg_time_ms\": " << std::fixed << std::setprecision(2)
+                     << (totalTime / count) << ",\n";
+                file << "      \"positions_tested\": " << count << "\n";
+                file << "    }";
+
+                if (depth < maxDepth)
+                    file << ",";
+
+                file << "\n";
+            }
+        }
+
+        file << "  }\n";
+        file << "}\n";
+
+        file.close();
+
+        std::cout << "Results exported to: " << filename << std::endl;
+    }
+
+    // Import and compare with previous results
+    void compareWithPrevious(const std::string &filename)
+    {
+        std::ifstream file(filename);
+
+        if (!file.is_open())
+        {
+            std::cerr << "Failed to open file: " << filename << std::endl;
+            return;
+        }
+
+        std::cout << "\n=== Comparison with Previous Run ===\n";
+        std::cout << "Previous results from: " << filename << "\n\n";
+
+        // Simple parsing - look for depth summaries
+        std::string line;
+        std::map<int, double> previousTimes;
+
+        while (std::getline(file, line))
+        {
+            // Look for "depth_N": { "avg_time_ms": X.XX
+            if (line.find("\"depth_") != std::string::npos)
+            {
+                size_t depthPos = line.find("depth_") + 6;
+                size_t endPos = line.find("\"", depthPos);
+                int depth = std::stoi(line.substr(depthPos, endPos - depthPos));
+
+                // Next line should have avg_time_ms
+                if (std::getline(file, line))
+                {
+                    size_t timePos = line.find("avg_time_ms\": ") + 14;
+                    size_t endTime = line.find(",", timePos);
+                    double time = std::stod(line.substr(timePos, endTime - timePos));
+
+                    previousTimes[depth] = time;
+                }
+            }
+        }
+
+        file.close();
+
+        // Compare with current results
+        std::map<int, double> currentTimes;
+        std::map<int, int> counts;
+
+        for (const auto &r : testResults)
+        {
+            currentTimes[r.depth] += r.timeMs;
+            counts[r.depth]++;
+        }
+
+        for (auto &pair : currentTimes)
+        {
+            pair.second /= counts[pair.first];
+        }
+
+        // Print comparison
+        std::cout << std::left << std::setw(8) << "Depth"
+                  << std::setw(15) << "Previous (ms)"
+                  << std::setw(15) << "Current (ms)"
+                  << std::setw(15) << "Speedup"
+                  << std::setw(15) << "Improvement"
+                  << "\n";
+        std::cout << std::string(65, '-') << "\n";
+
+        for (const auto &pair : currentTimes)
+        {
+            int depth = pair.first;
+            double current = pair.second;
+
+            if (previousTimes.count(depth))
+            {
+                double previous = previousTimes[depth];
+                double speedup = previous / current;
+                double improvement = 100.0 * (1.0 - current / previous);
+
+                std::cout << std::left << std::setw(8) << depth
+                          << std::setw(15) << std::fixed << std::setprecision(2) << previous
+                          << std::setw(15) << current
+                          << std::setw(15) << speedup << "x"
+                          << std::setw(15) << improvement << "%"
+                          << "\n";
+            }
+        }
+
+        std::cout << "\n";
     }
 };

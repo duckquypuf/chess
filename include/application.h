@@ -16,7 +16,6 @@ public:
     {
         while(!glfwWindowShouldClose(window.window))
         {
-            board.updatePieces();
             window.processInput();
 
             board.handleInput(window, renderer.smallestDimension);

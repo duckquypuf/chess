@@ -1,9 +1,9 @@
 [
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/src/main_debug.cpp.o -c /Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp",
-  "file": "/Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp",
-  "output": "CMakeFiles/chess.dir/src/main_debug.cpp.o"
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/src/main.cpp.o -c /Users/owaismacbook/Documents/chessCpp/src/main.cpp",
+  "file": "/Users/owaismacbook/Documents/chessCpp/src/main.cpp",
+  "output": "CMakeFiles/chess.dir/src/main.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",

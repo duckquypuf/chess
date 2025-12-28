@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/chess.dir/src/main_debug.cpp.o"
-  "CMakeFiles/chess.dir/src/main_debug.cpp.o.d"
+  "CMakeFiles/chess.dir/src/main.cpp.o"
+  "CMakeFiles/chess.dir/src/main.cpp.o.d"
   "CMakeFiles/chess.dir/src/stb_impl.cpp.o"
   "CMakeFiles/chess.dir/src/stb_impl.cpp.o.d"
   "CMakeFiles/chess.dir/thirdparty/glad.c.o"
