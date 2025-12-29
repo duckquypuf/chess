@@ -86,7 +86,7 @@ inline std::vector<Piece> loadFenString(const char *fen)
             continue;
         }
 
-        bool isWhite = (c >= 'A' && c <= 'Z');
+        bool isWhite = (c >= 'a' && c <= 'z');
         char lc = tolower(c);
 
         PieceType type = None;

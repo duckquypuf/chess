@@ -173,7 +173,7 @@ private:
 class Board
 {
 public:
-    std::vector<Piece> pieces = loadFenString("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr");
+    std::vector<Piece> pieces = loadFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
     int selectedSquare = -1;
     bool isWhiteTurn = true;
     std::vector<Move> legalMoves;
