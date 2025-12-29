@@ -5,7 +5,7 @@
 #include "move_generator.h"
 #include <algorithm>
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 #include <cstdlib>
@@ -19,17 +19,30 @@ public:
     std::vector<Move> legalMoves;
     bool isDragging = false;
 
-    int whiteKing = -1;
-    int blackKing = -1;
-
     int checkmate = -1;
 
     int enPassantSquare = -1;
     int lastPawnOrCapture = 0;
 
+    std::vector<int> squaresAttacked;
+
+    std::unordered_map<std::pair<PieceType, bool>, int> pieceMap;
+
     Board()
     {
-        findKings();
+        findPieces();
+    }
+
+    void updateSquares()
+    {
+        squaresAttacked.clear();
+        for(int i = 0; i < 64; i++)
+        {
+            if(MoveGen::isSquareAttacked(this, i, isWhiteTurn))
+            {
+                squaresAttacked.push_back(i);
+            }
+        }
     }
 
     void handleInput(Window &window, float boardSize)
@@ -53,7 +66,7 @@ public:
                         if (m.from == selectedSquare)
                             legalMoves.push_back(m);
 
-                        isDragging = true;
+                        isDragging = !legalMoves.empty();
                     }
                 }
             }
@@ -169,12 +182,13 @@ public:
         if (targetPiece.type == King)
         {
             if (movingPieceIsWhite)
-                whiteKing = move.to;
+                pieceMap[{King, true}] = move.to;
             else
-                blackKing = move.to;
+                pieceMap[{King, false}] = move.to;
         }
 
         isWhiteTurn = !isWhiteTurn;
+        updateSquares();
     }
 
     void unmakeMove(Move &move)
@@ -230,39 +244,24 @@ public:
         if (from.type == King)
         {
             if (from.isWhite)
-                whiteKing = move.from;
+                pieceMap[{King, true}] = move.from;
             else
-                blackKing = move.from;
+                pieceMap[{King, false}] = move.from;
         }
 
         isWhiteTurn = !isWhiteTurn;
+        updateSquares();
     }
 
-    void findKings()
+    void findPieces()
     {
-        bool foundWhite = false;
-        bool foundBlack = false;
-
-        for (int i = 0; i < 64; i++)
+        for(int i = 0; i < 64; i++)
         {
             Piece &piece = pieces[i];
 
-            if (piece.type == King)
-            {
-                if (piece.isWhite)
-                {
-                    foundWhite = true;
-                    whiteKing = i;
-                }
-                else
-                {
-                    foundBlack = true;
-                    blackKing = i;
-                }
-            }
+            if(piece.type == None) continue;
 
-            if (foundWhite && foundBlack)
-                break;
+            pieceMap[{piece.type, piece.isWhite}] = i;
         }
     }
 
@@ -288,10 +287,11 @@ public:
 
         if(moves.size() == 0)
         {
+            checkmate = isWhite ? 1 : 0;
             return Move(-1, -1);
         }
 
-        int i = rand() % (moves.size() - 1);
+        int i = rand() % moves.size();
 
         return moves[i];
     }

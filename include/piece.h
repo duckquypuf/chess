@@ -20,7 +20,6 @@ public:
     PieceType type;
     bool isWhite;
     bool hasMoved;
-    uint8_t pos;
 
     Piece()
     {
@@ -29,11 +28,10 @@ public:
         hasMoved = false;
     }
 
-    Piece(const PieceType _type, bool white, const uint8_t _pos)
+    Piece(const PieceType _type, bool white)
     {
         type = _type;
         isWhite = white;
-        pos = _pos;
         hasMoved = false;
     }
 };

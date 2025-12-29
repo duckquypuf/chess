@@ -10,7 +10,7 @@ std::vector<Move> MoveGen::generateLegalMoves(Board *board)
 
     if(pseudoLegal.size() == 0)
     {
-        board->checkmate = board->isWhiteTurn ? 0 : 1;
+        board->checkmate = board->isWhiteTurn ? 1 : 0;
         return legal;
     }
 
@@ -19,16 +19,15 @@ std::vector<Move> MoveGen::generateLegalMoves(Board *board)
         if (0 <= move.from && move.from <= 63 && 0 <= move.to && move.to <= 63)
         {
             board->makeMove(move);
-            std::vector<Move> responses = generateMoves(board);
 
-            int ourKing = board->isWhiteTurn ? board->blackKing : board->whiteKing;
+            int ourKing = board->isWhiteTurn ? board->pieceMap[{King, false}] : board->pieceMap[{King, true}];
 
             bool leavesUsInCheck = false;
-            for (auto &response : responses)
+
+            for(auto& square : board->squaresAttacked)
             {
-                if (response.to == ourKing)
+                if(square == ourKing)
                 {
-                    // This move leaves us in check - it's illegal
                     leavesUsInCheck = true;
                     break;
                 }
@@ -44,6 +43,108 @@ std::vector<Move> MoveGen::generateLegalMoves(Board *board)
     }
 
     return legal;
+}
+
+bool MoveGen::isSquareAttacked(Board *board, int square, bool byWhite)
+{
+    // Check pawn attacks
+    int pawnDirection = byWhite ? -8 : 8;  // White pawns attack upward, black downward
+    int pawnAttacks[2] = {pawnDirection + 1, pawnDirection - 1};
+    
+    for (int offset : pawnAttacks)
+    {
+        int attackSquare = square + offset;
+        
+        if (attackSquare < 0 || attackSquare >= 64)
+            continue;
+            
+        // Check if we didn't wrap around the board
+        int squareFile = getFile(square);
+        int attackFile = getFile(attackSquare);
+        if (abs(attackFile - squareFile) != 1)
+            continue;
+        
+        const Piece &piece = board->pieces[attackSquare];
+        if (piece.type == Pawn && piece.isWhite == byWhite)
+            return true;
+    }
+    
+    // Check knight attacks
+    for (int offset : knightOffsets)
+    {
+        int attackSquare = square + offset;
+        
+        if (attackSquare < 0 || attackSquare >= 64)
+            continue;
+            
+        int squareFile = getFile(square);
+        int squareRank = getRank(square);
+        int attackFile = getFile(attackSquare);
+        int attackRank = getRank(attackSquare);
+        
+        int fileDiff = abs(attackFile - squareFile);
+        int rankDiff = abs(attackRank - squareRank);
+        
+        if (!((fileDiff == 2 && rankDiff == 1) || (fileDiff == 1 && rankDiff == 2)))
+            continue;
+        
+        const Piece &piece = board->pieces[attackSquare];
+        if (piece.type == Knight && piece.isWhite == byWhite)
+            return true;
+    }
+    
+    // Check king attacks
+    for (int direction = 0; direction < 8; direction++)
+    {
+        int attackSquare = square + directionOffsets[direction];
+        
+        if (attackSquare < 0 || attackSquare >= 64)
+            continue;
+            
+        int squareFile = getFile(square);
+        int squareRank = getRank(square);
+        int attackFile = getFile(attackSquare);
+        int attackRank = getRank(attackSquare);
+        
+        if (abs(attackFile - squareFile) > 1 || abs(attackRank - squareRank) > 1)
+            continue;
+        
+        const Piece &piece = board->pieces[attackSquare];
+        if (piece.type == King && piece.isWhite == byWhite)
+            return true;
+    }
+    
+    // Check sliding pieces (bishop, rook, queen)
+    for (int direction = 0; direction < 8; direction++)
+    {
+        for (int n = 0; n < numSquaresToEdge[square][direction]; n++)
+        {
+            int attackSquare = square + directionOffsets[direction] * (n + 1);
+            const Piece &piece = board->pieces[attackSquare];
+            
+            if (piece.type == None)
+                continue;
+            
+            // Found a piece - check if it's an attacker
+            if (piece.isWhite == byWhite)
+            {
+                // Check if this piece can attack along this direction
+                bool isOrthogonal = direction < 4;  // N, S, W, E
+                bool isDiagonal = direction >= 4;   // NW, SE, NE, SW
+                
+                if (isOrthogonal && (piece.type == Rook || piece.type == Queen))
+                    return true;
+                    
+                if (isDiagonal && (piece.type == Bishop || piece.type == Queen))
+                    return true;
+            }
+            
+            // Piece blocks further attacks in this direction
+            break;
+        }
+    }
+    
+    return false;
 }
 
 std::vector<Move> MoveGen::generateMoves(const Board *board)

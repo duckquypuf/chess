@@ -32,7 +32,8 @@ struct Move
           epCapturedSquare(-1),
           epCapturedPiece(),
           movedPieceHadMoved(false),
-          rookHadMoved(false) {}
+          rookHadMoved(false),
+          wasPromotion(false) {}
 };
 
 namespace MoveGen

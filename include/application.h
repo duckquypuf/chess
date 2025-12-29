@@ -35,7 +35,8 @@ public:
                     std::cout << "MATE FOR WHITE" << std::endl;
             }
 
-            board.moveComputer(false);
+            board.handleInput(window, renderer.smallestDimension);
+            //board.moveComputer(false);
 
             if (board.checkmate >= 0)
             {
