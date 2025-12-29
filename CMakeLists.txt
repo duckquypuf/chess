@@ -14,8 +14,8 @@ file(GLOB IMGUI_SOURCES
 )
 
 add_executable(chess
-    src/main.cpp
-    #src/main_debug.cpp
+    #src/main.cpp
+    src/main_debug.cpp
     src/stb_impl.cpp
     include/board.cpp
     include/move_generator.cpp

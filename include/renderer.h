@@ -13,7 +13,6 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "shader.h"
-#include "camera.h"
 #include "window.h"
 #include "piece.h"
 #include "move_generator.h"
@@ -118,12 +117,9 @@ public:
         }
     }
 
-    void render(Camera cam, Window window, const Board &board)
+    void render(Window window, const Board &board)
     {
         shader->use();
-
-        glm::mat4 view = cam.GetViewMatrix();
-        glm::mat4 proj = cam.GetProjectionMatrix();
 
         shader->setVec2("screenRes", glm::vec2(window.screenWidth, window.screenHeight));
         shader->setFloat("boardSize", smallestDimension);

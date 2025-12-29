@@ -3,8 +3,9 @@
 #include "window.h"
 #include "piece.h"
 #include "move_generator.h"
-#include <algorithm>
 
+#include <iostream>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <cstdlib>
@@ -481,10 +482,9 @@ public:
             if (move.from < 0 || move.to < 0)
                 return; // game over
 
-            makeMove(move);
-            //animMove = move;
-            //animT = 0.0f;
-            //isAnimating = true;
+            animMove = move;
+            animT = 0.0f;
+            isAnimating = true;
         }
     }
 
@@ -501,6 +501,24 @@ public:
         int i = rand() % moves.size();
 
         return moves[i];
+    }
+
+    int moveGenerationTest(int depth)
+    {
+        if(depth == 0)
+            return 1;
+
+        std::vector<Move> moves = MoveGen::generateLegalMoves(this);
+        int numPositions = 0;
+
+        for(auto &move : moves)
+        {
+            makeMove(move);
+            numPositions += moveGenerationTest(depth -1);
+            unmakeMove(move);
+        }
+
+        return numPositions;
     }
 
 private:

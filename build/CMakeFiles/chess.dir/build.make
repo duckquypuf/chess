@@ -72,19 +72,19 @@ include CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/codegen:
 .PHONY : CMakeFiles/chess.dir/codegen
 
-CMakeFiles/chess.dir/src/main.cpp.o: CMakeFiles/chess.dir/flags.make
-CMakeFiles/chess.dir/src/main.cpp.o: /Users/owaismacbook/Documents/chessCpp/src/main.cpp
-CMakeFiles/chess.dir/src/main.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/chess.dir/src/main.cpp.o"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/src/main.cpp.o -MF CMakeFiles/chess.dir/src/main.cpp.o.d -o CMakeFiles/chess.dir/src/main.cpp.o -c /Users/owaismacbook/Documents/chessCpp/src/main.cpp
+CMakeFiles/chess.dir/src/main_debug.cpp.o: CMakeFiles/chess.dir/flags.make
+CMakeFiles/chess.dir/src/main_debug.cpp.o: /Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp
+CMakeFiles/chess.dir/src/main_debug.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/chess.dir/src/main_debug.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/src/main_debug.cpp.o -MF CMakeFiles/chess.dir/src/main_debug.cpp.o.d -o CMakeFiles/chess.dir/src/main_debug.cpp.o -c /Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp
 
-CMakeFiles/chess.dir/src/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/chess.dir/src/main.cpp.i"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/owaismacbook/Documents/chessCpp/src/main.cpp > CMakeFiles/chess.dir/src/main.cpp.i
+CMakeFiles/chess.dir/src/main_debug.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/chess.dir/src/main_debug.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp > CMakeFiles/chess.dir/src/main_debug.cpp.i
 
-CMakeFiles/chess.dir/src/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/chess.dir/src/main.cpp.s"
-	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/owaismacbook/Documents/chessCpp/src/main.cpp -o CMakeFiles/chess.dir/src/main.cpp.s
+CMakeFiles/chess.dir/src/main_debug.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/chess.dir/src/main_debug.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp -o CMakeFiles/chess.dir/src/main_debug.cpp.s
 
 CMakeFiles/chess.dir/src/stb_impl.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/src/stb_impl.cpp.o: /Users/owaismacbook/Documents/chessCpp/src/stb_impl.cpp
@@ -242,7 +242,7 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.s: cmake_force
 
 # Object files for target chess
 chess_OBJECTS = \
-"CMakeFiles/chess.dir/src/main.cpp.o" \
+"CMakeFiles/chess.dir/src/main_debug.cpp.o" \
 "CMakeFiles/chess.dir/src/stb_impl.cpp.o" \
 "CMakeFiles/chess.dir/include/board.cpp.o" \
 "CMakeFiles/chess.dir/include/move_generator.cpp.o" \
@@ -258,7 +258,7 @@ chess_OBJECTS = \
 # External object files for target chess
 chess_EXTERNAL_OBJECTS =
 
-chess: CMakeFiles/chess.dir/src/main.cpp.o
+chess: CMakeFiles/chess.dir/src/main_debug.cpp.o
 chess: CMakeFiles/chess.dir/src/stb_impl.cpp.o
 chess: CMakeFiles/chess.dir/include/board.cpp.o
 chess: CMakeFiles/chess.dir/include/move_generator.cpp.o
