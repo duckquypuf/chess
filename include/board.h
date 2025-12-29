@@ -15,7 +15,7 @@ public:
     std::vector<Piece> pieces = loadFenString("RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr");
     int selectedSquare = -1;
     bool isWhiteTurn = true;
-    std::vector<int> legalMoves;
+    std::vector<Move> legalMoves;
     bool isDragging = false;
 
     int whiteKing = -1;
@@ -45,15 +45,7 @@ public:
                     selectedSquare = square;
 
                     // Generate moves and extract destinations for this piece
-                    std::vector<Move> generatedMoves = MoveGen::generateMoves(this);
-                    legalMoves.clear();
-                    for (const Move &m : generatedMoves)
-                    {
-                        if (m.from == selectedSquare)
-                        {
-                            legalMoves.push_back(m.to);
-                        }
-                    }
+                    legalMoves = MoveGen::generateLegalMoves(this);
 
                     isDragging = true;
                 }
@@ -67,12 +59,15 @@ public:
 
                 if (targetSquare >= 0 && targetSquare < 64)
                 {
-                    if (std::find(legalMoves.begin(), legalMoves.end(), targetSquare) != legalMoves.end())
+                    for(auto& move : legalMoves)
                     {
-                        Move m = Move(selectedSquare, targetSquare);
-                        makeMove(m);
-                        isWhiteTurn = !isWhiteTurn;
+                        if (move.from == selectedSquare && move.to == targetSquare)
+                        {
+                            Move m = move;
+                            makeMove(m);
+                        }
                     }
+                    
                 }
             }
 
@@ -86,6 +81,13 @@ public:
     {
         Piece &movingPiece = pieces[move.from];
         Piece &targetPiece = pieces[move.to];
+
+        // Save data before modifying
+        move.capturedPiece = pieces[move.to];
+        move.prevEnPassant = enPassantSquare;
+
+        // Save piece color before modifying
+        bool movingPieceIsWhite = movingPiece.isWhite;
 
         // Check if this is a pawn moving two squares (for en passant next turn)
         int movedSquares = abs(move.to - move.from);
@@ -105,8 +107,10 @@ public:
         // Handle en passant capture - remove the captured pawn
         if (isEnPassant)
         {
-            int capturedPawnSquare = movingPiece.isWhite ? (move.to - 8) : (move.to + 8);
+            int capturedPawnSquare = movingPieceIsWhite ? (move.to - 8) : (move.to + 8);
             pieces[capturedPawnSquare].type = None;
+            move.wasEnPassant = true;
+            move.epCapturedSquare = capturedPawnSquare;
         }
 
         // Reset en passant square every move
@@ -116,16 +120,111 @@ public:
         if (isPawnDoubleMove)
         {
             // En passant square is the square the pawn jumped over
-            enPassantSquare = movingPiece.isWhite ? (move.from + 8) : (move.from - 8);
+            enPassantSquare = movingPieceIsWhite ? (move.from + 8) : (move.from - 8);
         }
 
         // Handle Pawn Promotion
-        if (targetPiece.type == Pawn && getRank(targetPiece.pos) > 55 || getRank(targetPiece.pos) < 8)
+        int targetRank = getRank(move.to);
+        if (targetPiece.type == Pawn && (targetRank == 7 || targetRank == 0))
         {
-            promotePawn(targetPiece.pos, Queen);
+            promotePawn(move.to, Queen);
         }
+
+        // Handle Castling - move the rook
+        if (move.castling)
+        {
+            int backRank = movingPieceIsWhite ? 0 : 56;
+
+            // Kingside castling (king moved to g-file)
+            if (move.to == move.from + 2)
+            {
+                // Move rook from h-file to f-file
+                Piece &rook = pieces[backRank + 7];
+                Piece &rookTarget = pieces[backRank + 5];
+
+                rookTarget.type = rook.type;
+                rookTarget.isWhite = rook.isWhite;
+                rookTarget.hasMoved = true;
+                rook.type = None;
+            }
+            // Queenside castling (king moved to c-file)
+            else if (move.to == move.from - 2)
+            {
+                // Move rook from a-file to d-file
+                Piece &rook = pieces[backRank];
+                Piece &rookTarget = pieces[backRank + 3];
+
+                rookTarget.type = rook.type;
+                rookTarget.isWhite = rook.isWhite;
+                rookTarget.hasMoved = true;
+                rook.type = None;
+            }
+        }
+
+        // Update king position if king moved
+        if (targetPiece.type == King)
+        {
+            if (movingPieceIsWhite)
+                whiteKing = move.to;
+            else
+                blackKing = move.to;
+        }
+
+        isWhiteTurn = !isWhiteTurn;
     }
-    
+
+    void unmakeMove(Move &move)
+    {
+        Piece &from = pieces[move.from];
+        Piece &to = pieces[move.to];
+
+        // restore en passant square
+        enPassantSquare = move.prevEnPassant;
+
+        // undo castling
+        if (move.castling)
+        {
+            bool white = to.isWhite;
+            int backRank = white ? 0 : 56;
+
+            if (move.to == move.from + 2)
+            {
+                pieces[backRank + 7] = pieces[backRank + 5];
+                pieces[backRank + 5].type = None;
+            }
+            else if (move.to == move.from - 2)
+            {
+                pieces[backRank] = pieces[backRank + 3];
+                pieces[backRank + 3].type = None;
+            }
+        }
+
+        // move piece back
+        from = to;
+
+        // restore captured piece
+        if (move.wasEnPassant)
+        {
+            pieces[move.epCapturedSquare] = move.capturedPiece;
+            to.type = None;
+        }
+        else
+        {
+            to = move.capturedPiece;
+        }
+
+        // restore king square
+        if (from.type == King)
+        {
+            if (from.isWhite)
+                whiteKing = move.from;
+            else
+                blackKing = move.from;
+        }
+
+        isWhiteTurn = !isWhiteTurn;
+    }
+
     /*void moveComputer(bool isWhite)
     {
         if(checkmate >= 0) return;

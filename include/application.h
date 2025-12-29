@@ -50,7 +50,7 @@ public:
             }
 
             renderer.beginFrame();
-            renderer.render(camera, window, board.pieces, board.selectedSquare, board.legalMoves, board.isDragging);
+            renderer.render(camera, window, board);
             window.update();
         }
     }

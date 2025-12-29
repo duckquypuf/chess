@@ -12,9 +12,19 @@ struct Move
 {
     int from;
     int to;
+    bool castling;
 
-    constexpr Move(int f = -1, int t = -1) noexcept
-        : from(f), to(t) {}
+    Piece capturedPiece;
+    int prevEnPassant;
+    bool wasEnPassant;
+    int epCapturedSquare;
+
+    Move(int f = -1, int t = -1, bool c = false) noexcept
+        : from(f), to(t), castling(c),
+          capturedPiece(),
+          prevEnPassant(-1),
+          wasEnPassant(false),
+          epCapturedSquare(-1) {}
 };
 
 namespace MoveGen
@@ -68,6 +78,7 @@ namespace MoveGen
     inline int getRank(int square) { return square / 8; }
 
     // Move generation functions
+    std::vector<Move> generateLegalMoves(Board *board);
     std::vector<Move> generateMoves(const Board *board);
     void generateSlidingMoves(const Board *board, int startSquare, const Piece &piece);
     void generateKnightMoves(const Board *board, int startSquare, const Piece &piece);

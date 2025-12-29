@@ -16,6 +16,8 @@
 #include "camera.h"
 #include "window.h"
 #include "piece.h"
+#include "move_generator.h"
+#include "board.h"
 
 class Renderer
 {
@@ -63,7 +65,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void render(Camera cam, Window window, std::vector<Piece> pieces, int selectedSquare, std::vector<int> legalMoves, bool isDragging)
+    void render(Camera cam, Window window, const Board &board)
     {
         shader->use();
 
@@ -78,12 +80,23 @@ public:
 
         shader->setVec3("selectedColour", glm::vec3(0.813, 0.458, 0.187));
 
-        shader->setInt("selectedSquare", selectedSquare);
-        shader->setInt("numLegalMoves", legalMoves.size());
+        shader->setInt("selectedSquare", board.selectedSquare);
 
-        for (int i = 0; i < std::min((int)legalMoves.size(), 32); i++)
+        std::vector<int> legalMovesForPiece;
+
+        for(auto& move : board.legalMoves)
         {
-            shader->setInt(("legalMoves[" + std::to_string(i) + "]").c_str(), legalMoves[i]);
+            if(move.from == board.selectedSquare)
+            {
+                legalMovesForPiece.push_back(move.to);
+            }
+        }
+        
+        shader->setInt("numLegalMoves", legalMovesForPiece.size());
+
+        for (int i = 0; i < std::min((int)board.legalMoves.size(), 32); i++)
+        {
+            shader->setInt(("legalMoves[" + std::to_string(i) + "]").c_str(), legalMovesForPiece[i]);
         }
 
         glBindVertexArray(VAO);
@@ -100,13 +113,13 @@ public:
 
         for (int i = 0; i < 64; i++)
         {
-            Piece piece = pieces[i];
+            Piece piece = board.pieces[i];
 
             if (piece.type == None)
                 continue;
 
             // Skip drawing the selected piece at its board position if dragging
-            if (isDragging && i == selectedSquare)
+            if (board.isDragging && i == board.selectedSquare)
                 continue;
 
             int posX = piece.pos % 8 + 1;
@@ -124,9 +137,9 @@ public:
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
 
-        if (isDragging && selectedSquare >= 0 && selectedSquare < 64)
+        if (board.isDragging && board.selectedSquare >= 0 && board.selectedSquare < 64)
         {
-            Piece draggedPiece = pieces[selectedSquare];
+            Piece draggedPiece = board.pieces[board.selectedSquare];
 
             if (draggedPiece.type != None)
             {

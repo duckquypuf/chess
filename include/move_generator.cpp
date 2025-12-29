@@ -1,6 +1,34 @@
 #include "move_generator.h"
 #include "board.h"
 
+std::vector<Move> MoveGen::generateLegalMoves(Board *board)
+{
+    std::vector<Move> pseudoLegal = generateMoves(board);
+    std::vector<Move> legal;
+
+    for(auto& move : pseudoLegal)
+    {
+        board->makeMove(move);
+        std::vector<Move> responses = generateMoves(board);
+
+        for(auto& response : responses)
+        {
+            if(response.to == board->isWhiteTurn ? board->blackKing : board->whiteKing)
+            {
+                // Captured our king
+                break;
+            } else
+            {
+                legal.push_back(move);
+            }
+        }
+
+        board->unmakeMove(move);
+    }
+
+    return legal;
+}
+
 std::vector<Move> MoveGen::generateMoves(const Board *board)
 {
     moves.clear();
@@ -121,7 +149,55 @@ void MoveGen::generateKingMoves(const Board *board, int startSquare, const Piece
         moves.push_back(Move(startSquare, targetSquare));
     }
 
-    // TODO: Add castling moves
+    // Castling Moves
+    if (piece.hasMoved)
+        return;
+
+    int backRank = piece.isWhite ? 0 : 56;
+
+    // Kingside castling (king moves to g-file)
+    const Piece &kingsideRook = board->pieces[backRank + 7];
+    if (kingsideRook.type == Rook && !kingsideRook.hasMoved)
+    {
+        // Check if squares between king and rook are empty
+        bool pathClear = true;
+        for (int sq = startSquare + 1; sq < backRank + 7; sq++)
+        {
+            if (board->pieces[sq].type != None)
+            {
+                pathClear = false;
+                break;
+            }
+        }
+
+        if (pathClear)
+        {
+            // King moves to g-file (2 squares right)
+            moves.push_back(Move(startSquare, startSquare + 2, true));
+        }
+    }
+
+    // Queenside castling (king moves to c-file)
+    const Piece &queensideRook = board->pieces[backRank + 0];
+    if (queensideRook.type == Rook && !queensideRook.hasMoved)
+    {
+        // Check if squares between king and rook are empty
+        bool pathClear = true;
+        for (int sq = backRank + 1; sq < startSquare; sq++)
+        {
+            if (board->pieces[sq].type != None)
+            {
+                pathClear = false;
+                break;
+            }
+        }
+
+        if (pathClear)
+        {
+            // King moves to c-file (2 squares left)
+            moves.push_back(Move(startSquare, startSquare - 2, true));
+        }
+    }
 }
 
 void MoveGen::generatePawnMoves(const Board *board, int startSquare, const Piece &piece)
