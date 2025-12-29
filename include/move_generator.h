@@ -33,7 +33,7 @@ struct Move
           epCapturedPiece(),
           movedPieceHadMoved(false),
           rookHadMoved(false),
-          wasPromotion(false) {}
+          wasPromotion(false) {} // FIX: Initialize wasPromotion!
 };
 
 namespace MoveGen
@@ -93,5 +93,5 @@ namespace MoveGen
     void generateKnightMoves(const Board *board, int startSquare, const Piece &piece);
     void generateKingMoves(const Board *board, int startSquare, const Piece &piece);
     void generatePawnMoves(const Board *board, int startSquare, const Piece &piece);
-    bool isSquareAttacked(Board *board, int square, bool byWhite);
+    bool isSquareAttacked(const Board *board, int square, bool byWhite);
 };

@@ -68,9 +68,6 @@ inline std::vector<Piece> loadFenString(const char *fen)
 {
     std::vector<Piece> pieces;
 
-    int file = 0;
-    int rank = 0;
-
     for (int i = 0; fen[i] != '\0'; i++)
     {
         char c = fen[i];
@@ -79,21 +76,13 @@ inline std::vector<Piece> loadFenString(const char *fen)
             break;
 
         if (c == '/')
-        {
-            file = 0;
-            rank++;
             continue;
-        }
 
         if (c >= '1' && c <= '8')
         {
             int count = c - '0';
             for (int j = 0; j < count; j++)
-            {
-                uint8_t pos = rank * 8 + file;
-                pieces.emplace_back(None, false, pos);
-                file++;
-            }
+                pieces.emplace_back(None, false);
             continue;
         }
 
@@ -125,11 +114,7 @@ inline std::vector<Piece> loadFenString(const char *fen)
         }
 
         if (type != None)
-        {
-            uint8_t pos = rank * 8 + file;
-            pieces.emplace_back(type, isWhite, pos);
-            file++;
-        }
+            pieces.emplace_back(type, isWhite);
     }
 
     return pieces;

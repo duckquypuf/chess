@@ -1018,6 +1018,4 @@ CMakeFiles/chess.dir/src/main.cpp.o: \
   /Users/owaismacbook/Documents/chessCpp/include/camera.h \
   /Users/owaismacbook/Documents/chessCpp/include/piece.h \
   /Users/owaismacbook/Documents/chessCpp/include/move_generator.h \
-  /Users/owaismacbook/Documents/chessCpp/include/board.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/map \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__tree
+  /Users/owaismacbook/Documents/chessCpp/include/board.h
