@@ -122,8 +122,8 @@ public:
             if (board.isDragging && i == board.selectedSquare)
                 continue;
 
-            int posX = piece.pos % 8 + 1;
-            int posY = floor((piece.pos + 8.0f) / 8.0f);
+            int posX = i % 8 + 1;
+            int posY = floor((i + 8.0f) / 8.0f);
 
             float ox = -1.0f + (window.screenWidth - smallestDimension) / window.screenWidth - sx + (sx * posX) * 2.0f;
             float oy = -1.0f + (window.screenHeight - smallestDimension) / window.screenHeight - sy + (sy * posY) * 2.0f;

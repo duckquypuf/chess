@@ -14,17 +14,25 @@ struct Move
     int to;
     bool castling;
 
+    // State needed for unmake
     Piece capturedPiece;
     int prevEnPassant;
     bool wasEnPassant;
     int epCapturedSquare;
+    Piece epCapturedPiece;
+    bool movedPieceHadMoved;
+    bool rookHadMoved;
+    bool wasPromotion;
 
     Move(int f = -1, int t = -1, bool c = false) noexcept
         : from(f), to(t), castling(c),
           capturedPiece(),
           prevEnPassant(-1),
           wasEnPassant(false),
-          epCapturedSquare(-1) {}
+          epCapturedSquare(-1),
+          epCapturedPiece(),
+          movedPieceHadMoved(false),
+          rookHadMoved(false) {}
 };
 
 namespace MoveGen
@@ -84,4 +92,5 @@ namespace MoveGen
     void generateKnightMoves(const Board *board, int startSquare, const Piece &piece);
     void generateKingMoves(const Board *board, int startSquare, const Piece &piece);
     void generatePawnMoves(const Board *board, int startSquare, const Piece &piece);
+    bool isSquareAttacked(Board *board, int square, bool byWhite);
 };

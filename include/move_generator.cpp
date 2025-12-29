@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "move_generator.h"
 #include "board.h"
 
@@ -6,24 +8,39 @@ std::vector<Move> MoveGen::generateLegalMoves(Board *board)
     std::vector<Move> pseudoLegal = generateMoves(board);
     std::vector<Move> legal;
 
+    if(pseudoLegal.size() == 0)
+    {
+        board->checkmate = board->isWhiteTurn ? 0 : 1;
+        return legal;
+    }
+
     for(auto& move : pseudoLegal)
     {
-        board->makeMove(move);
-        std::vector<Move> responses = generateMoves(board);
-
-        for(auto& response : responses)
+        if (0 <= move.from && move.from <= 63 && 0 <= move.to && move.to <= 63)
         {
-            if(response.to == board->isWhiteTurn ? board->blackKing : board->whiteKing)
+            board->makeMove(move);
+            std::vector<Move> responses = generateMoves(board);
+
+            int ourKing = board->isWhiteTurn ? board->blackKing : board->whiteKing;
+
+            bool leavesUsInCheck = false;
+            for (auto &response : responses)
             {
-                // Captured our king
-                break;
-            } else
+                if (response.to == ourKing)
+                {
+                    // This move leaves us in check - it's illegal
+                    leavesUsInCheck = true;
+                    break;
+                }
+            }
+
+            if (!leavesUsInCheck)
             {
                 legal.push_back(move);
             }
-        }
 
-        board->unmakeMove(move);
+            board->unmakeMove(move);
+        }
     }
 
     return legal;
@@ -37,24 +54,24 @@ std::vector<Move> MoveGen::generateMoves(const Board *board)
     {
         const Piece &piece = board->pieces[startSquare];
 
-        if (piece.type != None && piece.isWhite == board->isWhiteTurn)
+        if (piece.type == None || piece.isWhite != board->isWhiteTurn)
+            continue;
+
+        if (PieceData::IsSlidingPiece(piece.type))
         {
-            if (PieceData::IsSlidingPiece(piece.type))
-            {
-                generateSlidingMoves(board, startSquare, piece);
-            }
-            else if (piece.type == Knight)
-            {
-                generateKnightMoves(board, startSquare, piece);
-            }
-            else if (piece.type == King)
-            {
-                generateKingMoves(board, startSquare, piece);
-            }
-            else if (piece.type == Pawn)
-            {
-                generatePawnMoves(board, startSquare, piece);
-            }
+            generateSlidingMoves(board, startSquare, piece);
+        }
+        else if (piece.type == Knight)
+        {
+            generateKnightMoves(board, startSquare, piece);
+        }
+        else if (piece.type == King)
+        {
+            generateKingMoves(board, startSquare, piece);
+        }
+        else if (piece.type == Pawn)
+        {
+            generatePawnMoves(board, startSquare, piece);
         }
     }
 
