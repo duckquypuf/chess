@@ -29,6 +29,8 @@ public:
     int screenWidth, screenHeight;
     GLFWwindow *window;
     std::string windowName;
+    float lastFrame = 0.0f;
+    float deltaTime = 0.0f;
 
     Window(std::string windowName, int screenWidth, int screenHeight)
     {
@@ -145,6 +147,11 @@ public:
 
     void update()
     {
+        // --- Calculate Delta Time ---
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         prevMousePressed = isMousePressed();
         glfwSwapBuffers(window);
         glfwPollEvents();

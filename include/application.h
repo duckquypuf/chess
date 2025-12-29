@@ -19,6 +19,7 @@ public:
         while(!glfwWindowShouldClose(window.window))
         {
             window.processInput();
+            board.updateAnimation(window.deltaTime);
 
             board.handleInput(window, renderer.smallestDimension);
             //board.moveComputer(true);
@@ -52,6 +53,7 @@ public:
 
             renderer.beginFrame();
             renderer.render(camera, window, board);
+            board.drawPieces(renderer, window);
             window.update();
         }
     }

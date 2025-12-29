@@ -170,6 +170,8 @@ private:
     }
 };
 
+class Renderer;
+
 class Board
 {
 public:
@@ -185,6 +187,11 @@ public:
     int lastPawnOrCapture = 0;
 
     PieceList pieceList;
+
+    bool isAnimating = false;
+    Move animMove;
+    float animT = 0.0f;
+    float animDuration = 0.15f;
 
     Board()
     {
@@ -438,6 +445,30 @@ public:
         }
     }
 
+    void updateAnimation(float dt)
+    {
+        if (!isAnimating)
+            return;
+
+        animT += dt;
+        if (animT >= animDuration)
+        {
+            animT = animDuration;
+            makeMove(animMove);
+            isAnimating = false;
+        }
+    }
+
+    glm::ivec2 squareToWorldPos(int i)
+    {
+        int posX = i % 8 + 1;
+        int posY = floor((i + 8.0f) / 8.0f);
+
+        return glm::ivec2(posX, posY);
+    }
+
+    void drawPieces(Renderer& renderer, Window &window);
+
     void moveComputer(bool isWhite)
     {
         if (checkmate >= 0)
@@ -451,6 +482,9 @@ public:
                 return; // game over
 
             makeMove(move);
+            //animMove = move;
+            //animT = 0.0f;
+            //isAnimating = true;
         }
     }
 

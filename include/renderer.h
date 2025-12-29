@@ -59,10 +59,63 @@ public:
         }
     }
 
+    ~Renderer()
+    {
+        delete shader;
+        delete pieceShader;
+    }
+
     void beginFrame()
     {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    void drawPiece(Board *board, Window &window, const Piece &piece, glm::vec2 pos, int i)
+    {
+        if (piece.type == None)
+            return;
+
+        pieceShader->use();
+
+        float square = smallestDimension / 8.0f;
+        float sx = square / window.screenWidth;
+        float sy = square / window.screenHeight;
+
+        pieceShader->setVec2("scale", glm::vec2(sx, sy));
+
+        if(!board->isDragging || board->selectedSquare != i)
+        {
+            float ox = -1.0f + (window.screenWidth - smallestDimension) / window.screenWidth - sx + (sx * pos.x) * 2.0f;
+            float oy = -1.0f + (window.screenHeight - smallestDimension) / window.screenHeight - sy + (sy * pos.y) * 2.0f;
+            pieceShader->setVec2("offset", glm::vec2(ox, oy));
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, piece.isWhite ? whiteTextures[piece.type] : blackTextures[piece.type]);
+            pieceShader->setInt("pieceTex", 0);
+
+            glBindVertexArray(VAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+        
+
+        if (board->isDragging && board->selectedSquare == i)
+        {
+            glm::vec2 mousePos = window.getMousePosition();
+
+            // Convert to normalized device coordinates centered on mouse
+            float nx = (mousePos.x / window.screenWidth) * 2.0f - 1.0f;
+            float ny = 1.0f - (mousePos.y / window.screenHeight) * 2.0f;
+
+            pieceShader->setVec2("offset", glm::vec2(nx, ny));
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, piece.isWhite ? whiteTextures[piece.type] : blackTextures[piece.type]);
+            pieceShader->setInt("pieceTex", 0);
+
+            glBindVertexArray(VAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
     }
 
     void render(Camera cam, Window window, const Board &board)
@@ -94,71 +147,13 @@ public:
         
         shader->setInt("numLegalMoves", legalMovesForPiece.size());
 
-        for (int i = 0; i < std::min((int)board.legalMoves.size(), 32); i++)
+        for (int i = 0; i < std::min((int)legalMovesForPiece.size(), 32); i++)
         {
             shader->setInt(("legalMoves[" + std::to_string(i) + "]").c_str(), legalMovesForPiece[i]);
         }
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        pieceShader->use();
-
-        // --- Draw Pieces ---
-        float square = smallestDimension / 8.0f;
-        float sx = square / window.screenWidth;
-        float sy = square / window.screenHeight;
-
-        pieceShader->setVec2("scale", glm::vec2(sx, sy));
-
-        for (int i = 0; i < 64; i++)
-        {
-            Piece piece = board.pieces[i];
-
-            if (piece.type == None)
-                continue;
-
-            // Skip drawing the selected piece at its board position if dragging
-            if (board.isDragging && i == board.selectedSquare)
-                continue;
-
-            int posX = i % 8 + 1;
-            int posY = floor((i + 8.0f) / 8.0f);
-
-            float ox = -1.0f + (window.screenWidth - smallestDimension) / window.screenWidth - sx + (sx * posX) * 2.0f;
-            float oy = -1.0f + (window.screenHeight - smallestDimension) / window.screenHeight - sy + (sy * posY) * 2.0f;
-            pieceShader->setVec2("offset", glm::vec2(ox, oy));
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, piece.isWhite ? whiteTextures[piece.type] : blackTextures[piece.type]);
-            pieceShader->setInt("pieceTex", 0);
-
-            glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-        }
-
-        if (board.isDragging && board.selectedSquare >= 0 && board.selectedSquare < 64)
-        {
-            Piece draggedPiece = board.pieces[board.selectedSquare];
-
-            if (draggedPiece.type != None)
-            {
-                glm::vec2 mousePos = window.getMousePosition();
-
-                // Convert to normalized device coordinates centered on mouse
-                float nx = (mousePos.x / window.screenWidth) * 2.0f - 1.0f;
-                float ny = 1.0f - (mousePos.y / window.screenHeight) * 2.0f;
-
-                pieceShader->setVec2("offset", glm::vec2(nx, ny));
-
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, draggedPiece.isWhite ? whiteTextures[draggedPiece.type] : blackTextures[draggedPiece.type]);
-                pieceShader->setInt("pieceTex", 0);
-
-                glBindVertexArray(VAO);
-                glDrawArrays(GL_TRIANGLES, 0, 6);
-            }
-        }
     }
 
 private:

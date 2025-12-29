@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/chess.dir/include/board.cpp.o"
+  "CMakeFiles/chess.dir/include/board.cpp.o.d"
   "CMakeFiles/chess.dir/include/move_generator.cpp.o"
   "CMakeFiles/chess.dir/include/move_generator.cpp.o.d"
   "CMakeFiles/chess.dir/src/main.cpp.o"

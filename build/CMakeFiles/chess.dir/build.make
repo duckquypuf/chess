@@ -100,10 +100,24 @@ CMakeFiles/chess.dir/src/stb_impl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/chess.dir/src/stb_impl.cpp.s"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/owaismacbook/Documents/chessCpp/src/stb_impl.cpp -o CMakeFiles/chess.dir/src/stb_impl.cpp.s
 
+CMakeFiles/chess.dir/include/board.cpp.o: CMakeFiles/chess.dir/flags.make
+CMakeFiles/chess.dir/include/board.cpp.o: /Users/owaismacbook/Documents/chessCpp/include/board.cpp
+CMakeFiles/chess.dir/include/board.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/chess.dir/include/board.cpp.o"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/include/board.cpp.o -MF CMakeFiles/chess.dir/include/board.cpp.o.d -o CMakeFiles/chess.dir/include/board.cpp.o -c /Users/owaismacbook/Documents/chessCpp/include/board.cpp
+
+CMakeFiles/chess.dir/include/board.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/chess.dir/include/board.cpp.i"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/owaismacbook/Documents/chessCpp/include/board.cpp > CMakeFiles/chess.dir/include/board.cpp.i
+
+CMakeFiles/chess.dir/include/board.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/chess.dir/include/board.cpp.s"
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/owaismacbook/Documents/chessCpp/include/board.cpp -o CMakeFiles/chess.dir/include/board.cpp.s
+
 CMakeFiles/chess.dir/include/move_generator.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/include/move_generator.cpp.o: /Users/owaismacbook/Documents/chessCpp/include/move_generator.cpp
 CMakeFiles/chess.dir/include/move_generator.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/chess.dir/include/move_generator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/chess.dir/include/move_generator.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/include/move_generator.cpp.o -MF CMakeFiles/chess.dir/include/move_generator.cpp.o.d -o CMakeFiles/chess.dir/include/move_generator.cpp.o -c /Users/owaismacbook/Documents/chessCpp/include/move_generator.cpp
 
 CMakeFiles/chess.dir/include/move_generator.cpp.i: cmake_force
@@ -117,7 +131,7 @@ CMakeFiles/chess.dir/include/move_generator.cpp.s: cmake_force
 CMakeFiles/chess.dir/thirdparty/glad.c.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/thirdparty/glad.c.o: /Users/owaismacbook/Documents/chessCpp/thirdparty/glad.c
 CMakeFiles/chess.dir/thirdparty/glad.c.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/chess.dir/thirdparty/glad.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/chess.dir/thirdparty/glad.c.o"
 	/usr/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/chess.dir/thirdparty/glad.c.o -MF CMakeFiles/chess.dir/thirdparty/glad.c.o.d -o CMakeFiles/chess.dir/thirdparty/glad.c.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/glad.c
 
 CMakeFiles/chess.dir/thirdparty/glad.c.i: cmake_force
@@ -131,7 +145,7 @@ CMakeFiles/chess.dir/thirdparty/glad.c.s: cmake_force
 CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o: /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui.cpp
 CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o -MF CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o.d -o CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui.cpp
 
 CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.i: cmake_force
@@ -145,7 +159,7 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.s: cmake_force
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o: /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_demo.cpp
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o -MF CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o.d -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_demo.cpp
 
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.i: cmake_force
@@ -159,7 +173,7 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.s: cmake_force
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o: /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_draw.cpp
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o -MF CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o.d -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_draw.cpp
 
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.i: cmake_force
@@ -173,7 +187,7 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.s: cmake_force
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o: /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_glfw.cpp
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o -MF CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o.d -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_glfw.cpp
 
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.i: cmake_force
@@ -187,7 +201,7 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.s: cmake_force
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o: /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_opengl3.cpp
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o -MF CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_opengl3.cpp
 
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.i: cmake_force
@@ -201,7 +215,7 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.s: cmake_force
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o: /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_tables.cpp
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o -MF CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o.d -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_tables.cpp
 
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.i: cmake_force
@@ -215,7 +229,7 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.s: cmake_force
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o: CMakeFiles/chess.dir/flags.make
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o: /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_widgets.cpp
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o: CMakeFiles/chess.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o"
 	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o -MF CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_widgets.cpp
 
 CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.i: cmake_force
@@ -230,6 +244,7 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.s: cmake_force
 chess_OBJECTS = \
 "CMakeFiles/chess.dir/src/main.cpp.o" \
 "CMakeFiles/chess.dir/src/stb_impl.cpp.o" \
+"CMakeFiles/chess.dir/include/board.cpp.o" \
 "CMakeFiles/chess.dir/include/move_generator.cpp.o" \
 "CMakeFiles/chess.dir/thirdparty/glad.c.o" \
 "CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o" \
@@ -245,6 +260,7 @@ chess_EXTERNAL_OBJECTS =
 
 chess: CMakeFiles/chess.dir/src/main.cpp.o
 chess: CMakeFiles/chess.dir/src/stb_impl.cpp.o
+chess: CMakeFiles/chess.dir/include/board.cpp.o
 chess: CMakeFiles/chess.dir/include/move_generator.cpp.o
 chess: CMakeFiles/chess.dir/thirdparty/glad.c.o
 chess: CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o
@@ -258,7 +274,7 @@ chess: CMakeFiles/chess.dir/build.make
 chess: /opt/homebrew/lib/libglfw.3.4.dylib
 chess: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework
 chess: CMakeFiles/chess.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking CXX executable chess"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/owaismacbook/Documents/chessCpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable chess"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/chess.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

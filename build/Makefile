@@ -136,6 +136,30 @@ chess/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/build
 .PHONY : chess/fast
 
+include/board.o: include/board.cpp.o
+.PHONY : include/board.o
+
+# target to build an object file
+include/board.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/include/board.cpp.o
+.PHONY : include/board.cpp.o
+
+include/board.i: include/board.cpp.i
+.PHONY : include/board.i
+
+# target to preprocess a source file
+include/board.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/include/board.cpp.i
+.PHONY : include/board.cpp.i
+
+include/board.s: include/board.cpp.s
+.PHONY : include/board.s
+
+# target to generate assembly for a file
+include/board.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/include/board.cpp.s
+.PHONY : include/board.cpp.s
+
 include/move_generator.o: include/move_generator.cpp.o
 .PHONY : include/move_generator.o
 
@@ -410,6 +434,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... chess"
+	@echo "... include/board.o"
+	@echo "... include/board.i"
+	@echo "... include/board.s"
 	@echo "... include/move_generator.o"
 	@echo "... include/move_generator.i"
 	@echo "... include/move_generator.s"
