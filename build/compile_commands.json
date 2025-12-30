@@ -1,25 +1,25 @@
 [
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/src/main_debug.cpp.o -c /Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/src/main_debug.cpp.o -c /Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp",
   "output": "CMakeFiles/chess.dir/src/main_debug.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/src/stb_impl.cpp.o -c /Users/owaismacbook/Documents/chessCpp/src/stb_impl.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/src/stb_impl.cpp.o -c /Users/owaismacbook/Documents/chessCpp/src/stb_impl.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/src/stb_impl.cpp",
   "output": "CMakeFiles/chess.dir/src/stb_impl.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/include/board.cpp.o -c /Users/owaismacbook/Documents/chessCpp/include/board.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/include/board.cpp.o -c /Users/owaismacbook/Documents/chessCpp/include/board.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/include/board.cpp",
   "output": "CMakeFiles/chess.dir/include/board.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/include/move_generator.cpp.o -c /Users/owaismacbook/Documents/chessCpp/include/move_generator.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/include/move_generator.cpp.o -c /Users/owaismacbook/Documents/chessCpp/include/move_generator.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/include/move_generator.cpp",
   "output": "CMakeFiles/chess.dir/include/move_generator.cpp.o"
 },
@@ -31,43 +31,43 @@
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui.cpp",
   "output": "CMakeFiles/chess.dir/thirdparty/imgui/imgui.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_demo.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_demo.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_demo.cpp",
   "output": "CMakeFiles/chess.dir/thirdparty/imgui/imgui_demo.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_draw.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_draw.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_draw.cpp",
   "output": "CMakeFiles/chess.dir/thirdparty/imgui/imgui_draw.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_glfw.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_glfw.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_glfw.cpp",
   "output": "CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_glfw.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_opengl3.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_opengl3.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_impl_opengl3.cpp",
   "output": "CMakeFiles/chess.dir/thirdparty/imgui/imgui_impl_opengl3.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_tables.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_tables.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_tables.cpp",
   "output": "CMakeFiles/chess.dir/thirdparty/imgui/imgui_tables.cpp.o"
 },
 {
   "directory": "/Users/owaismacbook/Documents/chessCpp/build",
-  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_widgets.cpp",
+  "command": "/usr/bin/clang++  -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations -o CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o -c /Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_widgets.cpp",
   "file": "/Users/owaismacbook/Documents/chessCpp/thirdparty/imgui/imgui_widgets.cpp",
   "output": "CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o"
 }

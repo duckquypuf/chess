@@ -66,7 +66,10 @@ namespace PieceData
 
 inline std::vector<Piece> loadFenString(const char *fen)
 {
-    std::vector<Piece> pieces;
+    std::vector<Piece> pieces(64);
+
+    int rank = 7;
+    int file = 0;
 
     for (int i = 0; fen[i] != '\0'; i++)
     {
@@ -76,17 +79,24 @@ inline std::vector<Piece> loadFenString(const char *fen)
             break;
 
         if (c == '/')
+        {
+            rank--;
+            file = 0;
             continue;
+        }
 
         if (c >= '1' && c <= '8')
         {
             int count = c - '0';
             for (int j = 0; j < count; j++)
-                pieces.emplace_back(None, false);
+            {
+                pieces[rank * 8 + file] = Piece();
+                file++;
+            }
             continue;
         }
 
-        bool isWhite = (c >= 'a' && c <= 'z');
+        bool isWhite = (c >= 'A' && c <= 'Z');
         char lc = tolower(c);
 
         PieceType type = None;
@@ -113,8 +123,8 @@ inline std::vector<Piece> loadFenString(const char *fen)
             break;
         }
 
-        if (type != None)
-            pieces.emplace_back(type, isWhite);
+        pieces[rank * 8 + file] = Piece(type, isWhite);
+        file++;
     }
 
     return pieces;

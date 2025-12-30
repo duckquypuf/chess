@@ -49,11 +49,11 @@ public:
         for(int i = 0; i < 6; i++)
         {
             whiteTextures[i] = loadTexture(
-                (std::string("../assets/textures/") + std::to_string(i) + ".png").c_str()
+                (std::string("assets/textures/") + std::to_string(i) + ".png").c_str()
             );
 
             blackTextures[i] = loadTexture(
-                (std::string("../assets/textures/b") + std::to_string(i) + ".png").c_str()
+                (std::string("assets/textures/b") + std::to_string(i) + ".png").c_str()
             );
         }
     }

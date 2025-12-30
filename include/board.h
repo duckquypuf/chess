@@ -98,15 +98,26 @@ struct PieceList
         }
     }
 
+    // OPTIMIZED: Swap-and-pop instead of erase-remove
     void removePiece(PieceType type, bool isWhite, int square)
     {
         std::vector<int> *list = getPieceList(type, isWhite);
-        if (list)
+        if (!list)
+            return;
+
+        // Find the square and swap with last element, then pop
+        for (size_t i = 0; i < list->size(); i++)
         {
-            list->erase(std::remove(list->begin(), list->end(), square), list->end());
+            if ((*list)[i] == square)
+            {
+                (*list)[i] = list->back();
+                list->pop_back();
+                return;
+            }
         }
     }
 
+    // OPTIMIZED: Direct update instead of find-and-replace
     void movePiece(PieceType type, bool isWhite, int from, int to)
     {
         if (type == King)
@@ -119,12 +130,16 @@ struct PieceList
         }
 
         std::vector<int> *list = getPieceList(type, isWhite);
-        if (list)
+        if (!list)
+            return;
+
+        // Swap-based move
+        for (size_t i = 0; i < list->size(); i++)
         {
-            auto it = std::find(list->begin(), list->end(), from);
-            if (it != list->end())
+            if ((*list)[i] == from)
             {
-                *it = to;
+                (*list)[i] = to;
+                return;
             }
         }
     }
@@ -197,6 +212,13 @@ public:
     Board()
     {
         findPieces();
+
+        std::cout << "White pawns at squares: ";
+        for (int sq : pieceList.whitePawns)
+        {
+            std::cout << squareToChessNotation(sq) << "(" << sq << ") ";
+        }
+        std::cout << std::endl;
     }
 
     void handleInput(Window &window, float boardSize)
@@ -215,10 +237,18 @@ public:
                     // Generate moves and extract destinations for this piece
                     legalMoves.clear();
                     auto all = MoveGen::generateLegalMoves(this);
+
                     for (auto &m : all)
                     {
                         if (m.from == selectedSquare)
+                        {
+                            // For player input, only show Queen promotions
+                            // Filter out other promotion options
+                            if (m.wasPromotion && m.promotionPiece != Queen)
+                                continue;
+
                             legalMoves.push_back(m);
+                        }
                     }
 
                     isDragging = !legalMoves.empty();
@@ -267,7 +297,9 @@ public:
         int movedSquares = abs(move.to - move.from);
         bool isPawnDoubleMove = (movingPiece.type == Pawn && movedSquares == 16);
 
-        bool isEnPassant = (movingPiece.type == Pawn && move.to == enPassantSquare && enPassantSquare != -1);
+        bool isEnPassant = (movingPiece.type == Pawn &&
+                            move.to == enPassantSquare &&
+                            enPassantSquare != -1);
 
         // If capturing, remove captured piece from list
         if (targetPiece.type != None)
@@ -304,12 +336,13 @@ public:
         int targetRank = getRank(move.to);
         if (targetPiece.type == Pawn && (targetRank == 7 || targetRank == 0))
         {
-            promotePawn(move.to, Queen);
+            // Use the promotionPiece from the move
+            promotePawn(move.to, move.promotionPiece);
             move.wasPromotion = true;
 
-            // Update piece list: remove pawn, add queen
+            // Update piece list: remove pawn, add promoted piece
             pieceList.removePiece(Pawn, movingIsWhite, move.from);
-            pieceList.addPiece(Queen, movingIsWhite, move.to);
+            pieceList.addPiece(move.promotionPiece, movingIsWhite, move.to);
         }
         else
         {
@@ -392,7 +425,8 @@ public:
         // Undo promotion
         if (move.wasPromotion)
         {
-            pieceList.removePiece(Queen, movedIsWhite, move.to);
+            // Remove the promoted piece, restore the pawn
+            pieceList.removePiece(move.promotionPiece, movedIsWhite, move.to);
             pieceList.addPiece(Pawn, movedIsWhite, move.from);
             movedType = Pawn;
         }
@@ -502,23 +536,90 @@ public:
 
         return moves[i];
     }
+    
+    std::string squareToChessNotation(int square)
+    {
+        int file = getFile(square);
+        int rank = getRank(square) + 1;
+
+        std::string notation;
+
+        switch(file)
+        {
+        case 0:
+            notation = "a";
+            break;
+        case 1:
+            notation = "b";
+            break;
+        case 2:
+            notation = "c";
+            break;
+        case 3:
+            notation = "d";
+            break;
+        case 4:
+            notation = "e";
+            break;
+        case 5:
+            notation = "f";
+            break;
+        case 6:
+            notation = "g";
+            break;
+        case 7:
+            notation = "h";
+            break;
+        }
+
+        notation += std::to_string(rank);
+
+        return notation;
+    }
 
     int moveGenerationTest(int depth)
     {
         if(depth == 0)
             return 1;
 
-        std::vector<Move> moves = MoveGen::generateLegalMoves(this);
+        auto moves = MoveGen::generateLegalMoves(this);
         int numPositions = 0;
+
+        //if (depth == 1)
+            //return MoveGen::moves.size();
 
         for(auto &move : moves)
         {
             makeMove(move);
-            numPositions += moveGenerationTest(depth -1);
+            numPositions += moveGenerationTest(depth - 1);
             unmakeMove(move);
         }
 
         return numPositions;
+    }
+
+    void perftDivide(int depth)
+    {
+        auto moves = MoveGen::generateLegalMoves(this);
+        int total = 0;
+
+        for (auto &move : moves)
+        {
+            makeMove(move);
+            int nodes = moveGenerationTest(depth - 1);
+            unmakeMove(move);
+
+            std::cout
+                << squareToChessNotation(move.from)
+                << squareToChessNotation(move.to)
+                << ": "
+                << nodes
+                << std::endl;
+
+            total += nodes;
+        }
+
+        std::cout << "Total: " << total << std::endl;
     }
 
 private:

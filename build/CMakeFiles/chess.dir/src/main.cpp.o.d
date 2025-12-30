@@ -1015,7 +1015,6 @@ CMakeFiles/chess.dir/src/main.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path_iterator.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/u8path.h \
-  /Users/owaismacbook/Documents/chessCpp/include/camera.h \
   /Users/owaismacbook/Documents/chessCpp/include/piece.h \
   /Users/owaismacbook/Documents/chessCpp/include/move_generator.h \
   /Users/owaismacbook/Documents/chessCpp/include/board.h

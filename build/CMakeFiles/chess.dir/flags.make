@@ -15,7 +15,7 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/Users/owaismacbook/Documents/chessCpp/include -I/Users/owaismacbook/Documents/chessCpp/src -I/Users/owaismacbook/Documents/chessCpp/thirdparty -isystem /opt/homebrew/include -iframework /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks
 
-CXX_FLAGSarm64 = -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations
+CXX_FLAGSarm64 =  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations
 
-CXX_FLAGS = -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations
+CXX_FLAGS =  -O3 -march=native -DNDEBUG -flto -g -std=gnu++17 -arch arm64   -Wno-deprecated-declarations
 

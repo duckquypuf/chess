@@ -44,7 +44,7 @@ public:
         getInt(depth);
         println("");
 
-        for(int i = 1; i < depth; i++)
+        for(int i = 1; i <= depth; i++)
         {
             sw.start();
             print("Depth " + std::to_string(i) + ": ");

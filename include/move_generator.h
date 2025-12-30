@@ -23,8 +23,9 @@ struct Move
     bool movedPieceHadMoved;
     bool rookHadMoved;
     bool wasPromotion;
+    PieceType promotionPiece;
 
-    Move(int f = -1, int t = -1, bool c = false) noexcept
+    Move(int f = -1, int t = -1, bool c = false, PieceType promo = Queen) noexcept
         : from(f), to(t), castling(c),
           capturedPiece(),
           prevEnPassant(-1),
@@ -33,7 +34,8 @@ struct Move
           epCapturedPiece(),
           movedPieceHadMoved(false),
           rookHadMoved(false),
-          wasPromotion(false) {} // FIX: Initialize wasPromotion!
+          wasPromotion(false),
+          promotionPiece(promo) {} // FIX: Initialize wasPromotion!
 };
 
 namespace MoveGen
@@ -83,8 +85,8 @@ namespace MoveGen
     inline std::vector<Move> moves;
 
     // Helper functions
-    inline int getFile(int square) { return square % 8; }
-    inline int getRank(int square) { return square / 8; }
+    inline constexpr int getFile(int square) { return square & 7; }
+    inline constexpr int getRank(int square) { return square >> 3; }
 
     // Move generation functions
     std::vector<Move> generateLegalMoves(Board *board);
