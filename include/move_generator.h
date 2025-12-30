@@ -89,7 +89,7 @@ namespace MoveGen
     inline constexpr int getRank(int square) { return square >> 3; }
 
     // Move generation functions
-    std::vector<Move> generateLegalMoves(Board *board);
+    std::vector<Move> generateLegalMoves(Board *board, bool onlyGenCaptures = false);
     std::vector<Move> generateMoves(const Board *board);
     void generateSlidingMoves(const Board *board, int startSquare, const Piece &piece);
     void generateKnightMoves(const Board *board, int startSquare, const Piece &piece);

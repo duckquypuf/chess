@@ -1916,7 +1916,7 @@ CMakeFiles/chess.dir/include/move_generator.cpp.o: /Users/owaismacbook/Documents
   /opt/homebrew/include/glm/vec4.hpp \
   /opt/homebrew/include/glm/vector_relational.hpp
 
-CMakeFiles/chess.dir/src/main_debug.cpp.o: /Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp \
+CMakeFiles/chess.dir/src/main.cpp.o: /Users/owaismacbook/Documents/chessCpp/src/main.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityInternal.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/AvailabilityVersions.h \
@@ -2672,9 +2672,8 @@ CMakeFiles/chess.dir/src/main_debug.cpp.o: /Users/owaismacbook/Documents/chessCp
   /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdarg.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stddef.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/14.0.3/include/stdint.h \
-  /Users/owaismacbook/Documents/chessCpp/include/Stopwatch.h \
+  /Users/owaismacbook/Documents/chessCpp/include/application.h \
   /Users/owaismacbook/Documents/chessCpp/include/board.h \
-  /Users/owaismacbook/Documents/chessCpp/include/debug_application.h \
   /Users/owaismacbook/Documents/chessCpp/include/move_generator.h \
   /Users/owaismacbook/Documents/chessCpp/include/piece.h \
   /Users/owaismacbook/Documents/chessCpp/include/renderer.h \
@@ -5662,6 +5661,8 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o: /Users/owaismacbook/D
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/UTCoreTypes.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/LaunchServices.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/LSOpenDeprecated.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/LSInfo.h:
@@ -5733,8 +5734,6 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o: /Users/owaismacbook/D
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGWindowLevel.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGWindow.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGSession.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGRemoteOperation.h:
 
@@ -5978,13 +5977,11 @@ CMakeFiles/chess.dir/thirdparty/imgui/imgui_widgets.cpp.o: /Users/owaismacbook/D
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/dlfcn.h:
 
-/Users/owaismacbook/Documents/chessCpp/include/debug_application.h:
+/Users/owaismacbook/Documents/chessCpp/include/application.h:
 
-/Users/owaismacbook/Documents/chessCpp/include/Stopwatch.h:
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGSession.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Headers/LaunchServices.h:
-
-/Users/owaismacbook/Documents/chessCpp/src/main_debug.cpp:
+/Users/owaismacbook/Documents/chessCpp/src/main.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/xpc/availability.h:
 

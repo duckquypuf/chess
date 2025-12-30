@@ -191,7 +191,7 @@ class Renderer;
 class Board
 {
 public:
-    std::vector<Piece> pieces = loadFenString("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+    std::vector<Piece> pieces = loadFenString("3r4/3r4/3k4/8/8/3K4/3R4/3R4 w - - 0 1");
     int selectedSquare = -1;
     bool isWhiteTurn = true;
     std::vector<Move> legalMoves;
@@ -518,25 +518,52 @@ public:
 
             animMove = move;
             animT = 0.0f;
-            isAnimating = true;
         }
     }
 
     Move chooseComputerMove(bool isWhite)
     {
-        std::vector<Move> moves = MoveGen::generateLegalMoves(this);
+        auto moves = MoveGen::generateLegalMoves(this);
 
-        if (moves.size() == 0)
+        if (moves.empty())
         {
             checkmate = isWhite ? 1 : 0;
             return Move(-1, -1);
         }
 
-        int i = rand() % moves.size();
+        Move bestMove;
 
-        return moves[i];
+        const int infinity = 200000;
+
+        int bestValue = -infinity;
+        int alpha = -infinity;
+        int beta = infinity;
+        int searchDepth = 6;
+
+        orderMoves(moves);
+
+        for (auto &move : moves)
+        {
+            makeMove(move);
+            int val = -search(searchDepth-1, -beta, -alpha, 1);
+            unmakeMove(move);
+
+            if (val > bestValue)
+            {
+                bestValue = val;
+                bestMove = move;
+            }
+
+            alpha = std::max(alpha, val);
+        }
+
+        std::cout << "Best move evaluation: " << bestValue << std::endl;
+
+        isAnimating = true;
+
+        return bestMove;
     }
-    
+
     std::string squareToChessNotation(int square)
     {
         int file = getFile(square);
@@ -585,9 +612,6 @@ public:
         auto moves = MoveGen::generateLegalMoves(this);
         int numPositions = 0;
 
-        //if (depth == 1)
-            //return MoveGen::moves.size();
-
         for(auto &move : moves)
         {
             makeMove(move);
@@ -622,7 +646,245 @@ public:
         std::cout << "Total: " << total << std::endl;
     }
 
-private:
+    void orderMoves(std::vector<Move> &moves)
+    {
+        auto scoreMove = [this](const Move &move) -> int
+        {
+            int score = 0;
+
+            PieceType moveType = pieces[move.from].type;
+            PieceType captureType = pieces[move.to].type;
+
+            if (move.wasEnPassant)
+            {
+                score = 10 * PieceData::PawnValue - PieceData::PawnValue;
+            }
+            else if (captureType != None)
+            {
+                score = 10 * getPieceValue(captureType) - getPieceValue(moveType);
+            }
+
+            if (move.wasPromotion)
+            {
+                score += getPieceValue(move.promotionPiece);
+            }
+
+            return score;
+        };
+
+        std::sort(moves.begin(), moves.end(), [&](const Move &a, const Move &b)
+                  { return scoreMove(a) > scoreMove(b); });
+    }
+
+    int searchAllCaptures(int alpha, int beta)
+    {
+        int eval = evaluate();
+
+        if(eval >= beta)
+            return beta;
+        
+        alpha = std::max(alpha, eval);
+
+        std::vector<Move> captureMoves = MoveGen::generateLegalMoves(this, true);
+        orderMoves(captureMoves);
+
+        for(auto &move : captureMoves)
+        {
+            makeMove(move);
+            eval = -searchAllCaptures(-beta, -alpha);
+            unmakeMove(move);
+
+            if (eval >= beta)
+                return beta;
+
+            alpha = std::max(alpha, eval);
+        }
+
+        return alpha;
+    }
+
+    int search(int depth, int alpha, int beta, int ply)
+    {
+        if (depth == 0)
+            return searchAllCaptures(alpha, beta);
+
+        auto moves = MoveGen::generateLegalMoves(this);
+
+        if (moves.empty())
+        {
+            int ourKing = isWhiteTurn ? pieceList.whiteKing : pieceList.blackKing;
+            bool inCheck = MoveGen::isSquareAttacked(this, ourKing, !isWhiteTurn);
+
+            // Checkmate detected
+            if (inCheck)
+            {
+                return -100000 + ply;
+            }
+            // Stalemate
+            return 0;
+        }
+
+        orderMoves(moves);
+
+        for (auto &move : moves)
+        {
+            makeMove(move);
+            int eval = -search(depth - 1, -beta, -alpha, ply + 1);
+            unmakeMove(move);
+
+            if (eval >= beta)
+            {
+                return beta;
+            }
+            alpha = std::max(alpha, eval);
+        }
+
+        return alpha;
+    }
+
+    int evaluate()
+    {
+        int eval = 0;
+
+        // White pawns
+        for (int sq : pieceList.whitePawns)
+            eval += PieceData::PawnValue + PieceData::pawnTable[sq];
+
+        // White knights
+        for (int sq : pieceList.whiteKnights)
+            eval += PieceData::KnightValue + PieceData::knightTable[sq];
+
+        // (Add similar for other white pieces with material only)
+        for (int sq : pieceList.whiteBishops)
+            eval += PieceData::BishopValue;
+        for (int sq : pieceList.whiteRooks)
+            eval += PieceData::RookValue;
+        for (int sq : pieceList.whiteQueens)
+            eval += PieceData::QueenValue;
+
+        // Black pawns (flip table)
+        for (int sq : pieceList.blackPawns)
+            eval -= PieceData::PawnValue + PieceData::pawnTable[63 - sq];
+
+        // Black knights (flip table)
+        for (int sq : pieceList.blackKnights)
+            eval -= PieceData::KnightValue + PieceData::knightTable[63 - sq];
+
+        // (Add similar for other black pieces)
+        for (int sq : pieceList.blackBishops)
+            eval -= PieceData::BishopValue;
+        for (int sq : pieceList.blackRooks)
+            eval -= PieceData::RookValue;
+        for (int sq : pieceList.blackQueens)
+            eval -= PieceData::QueenValue;
+
+        // --- ENDGAME EVALUATION ---
+
+        int whiteMaterial = countMaterial(true, false);
+        int blackMaterial = countMaterial(false, false);
+        int totalMaterial = whiteMaterial + blackMaterial;
+
+        float endgameWeight = calculateEndgameWeight(totalMaterial);
+
+        if (whiteMaterial > blackMaterial)
+        {
+            eval += endgameEval(true, endgameWeight);
+        }
+        else if (blackMaterial > whiteMaterial)
+        {
+            eval -= endgameEval(false, endgameWeight);
+        }
+
+        return eval * (isWhiteTurn ? 1 : -1);
+    }
+
+    float calculateEndgameWeight(int materialWithoutPawns)
+    {
+        const float endgameMaterialStart = PieceData::RookValue * 2 + PieceData::BishopValue + PieceData::KnightValue;
+        const float multiplier = 1 / endgameMaterialStart;
+        return 1 - std::min(1.0f, materialWithoutPawns * multiplier);
+    }
+
+    int endgameEval(bool isWhite, float endgameWeight)
+    {
+        int ourKing = isWhite ? pieceList.whiteKing : pieceList.blackKing;
+        int opponentKing = isWhite ? pieceList.blackKing : pieceList.whiteKing;
+
+        int eval = 0;
+
+        int opponentKingRank = getRank(opponentKing);
+        int opponentKingFile = getFile(opponentKing);
+
+        int opponentKingDstToCentreFile = std::max(3 - opponentKingFile, opponentKingFile - 4);
+        int opponentKingDstToCentreRank = std::max(3 - opponentKingRank, opponentKingRank - 4);
+        int opponentKingDstToCentre = opponentKingDstToCentreFile + opponentKingDstToCentreRank;
+        eval += opponentKingDstToCentre;
+
+        int ourKingRank = getRank(ourKing);
+        int ourKingFile = getFile(ourKing);
+
+        int dstBetweenKingsRank = abs(ourKingRank - opponentKingRank);
+        int dstBetweenKingsFile = abs(ourKingFile - opponentKingFile);
+        int dstBetweenKings = dstBetweenKingsRank + dstBetweenKingsFile;
+
+        eval += 14 - dstBetweenKings;
+
+        return (int)(eval * 10 * endgameWeight);
+    }
+
+    int countMaterial(bool isWhite, bool withPawns = true)
+    {
+        int material = 0;
+
+        if(isWhite)
+        {
+            if(withPawns)
+                material += pieceList.whitePawns.size() * PieceData::PawnValue;
+            material += pieceList.whiteKnights.size() * PieceData::KnightValue;
+            material += pieceList.whiteBishops.size() * PieceData::BishopValue;
+            material += pieceList.whiteRooks.size() * PieceData::RookValue;
+            material += pieceList.whiteQueens.size() * PieceData::QueenValue;
+        } else
+        {
+            if(withPawns)
+                material += pieceList.blackPawns.size() * PieceData::PawnValue;
+            material += pieceList.blackKnights.size() * PieceData::KnightValue;
+            material += pieceList.blackBishops.size() * PieceData::BishopValue;
+            material += pieceList.blackRooks.size() * PieceData::RookValue;
+            material += pieceList.blackQueens.size() * PieceData::QueenValue;
+        }
+
+        return material;
+    }
+
+    int getPieceValue(PieceType type)
+    {
+        switch(type)
+        {
+        case None:
+            return 0;
+            break;
+        case Pawn:
+            return PieceData::PawnValue;
+            break;
+        case Knight:
+            return PieceData::KnightValue;
+            break;
+        case Bishop:
+            return PieceData::BishopValue;
+            break;
+        case Rook:
+            return PieceData::RookValue;
+            break;
+        case Queen:
+            return PieceData::QueenValue;
+            break;
+        default:
+            return 0;
+            break;
+        }
+    }
+
     bool isValidMove(int square, bool isWhite)
     {
         if (square < 0 || square > 63)

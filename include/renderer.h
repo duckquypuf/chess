@@ -49,11 +49,11 @@ public:
         for(int i = 0; i < 6; i++)
         {
             whiteTextures[i] = loadTexture(
-                (std::string("assets/textures/") + std::to_string(i) + ".png").c_str()
+                (std::string("../assets/textures/") + std::to_string(i) + ".png").c_str()
             );
 
             blackTextures[i] = loadTexture(
-                (std::string("assets/textures/b") + std::to_string(i) + ".png").c_str()
+                (std::string("../assets/textures/b") + std::to_string(i) + ".png").c_str()
             );
         }
     }
@@ -187,7 +187,6 @@ private:
 
         if (data)
         {
-            std::cout << "Texture loaded successfully: " << width << "x" << height << " with " << nrComponents << " components" << std::endl;
             GLenum format;
 
             if (nrComponents == 1)

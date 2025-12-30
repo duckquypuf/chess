@@ -3,24 +3,19 @@
 #include "move_generator.h"
 #include "board.h"
 
-std::vector<Move> MoveGen::generateLegalMoves(Board *board)
+std::vector<Move> MoveGen::generateLegalMoves(Board *board, bool onlyGenCaptures)
 {
     generateMoves(board);
-
-    if (moves.empty())
-    {
-        board->checkmate = board->isWhiteTurn ? 1 : 0;
-        return {};
-    }
 
     std::vector<Move> legal;
     legal.reserve(moves.size());
 
-
-    for (auto &move : moves) // Use const reference
+    for (auto &move : moves)
     {
-        board->makeMove(move);
+        if (onlyGenCaptures && board->pieces[move.to].type == None && !move.wasEnPassant && !move.wasPromotion)
+            continue;
 
+        board->makeMove(move);
         const int ourKing = board->isWhiteTurn ? board->pieceList.blackKing : board->pieceList.whiteKing;
 
         if (!isSquareAttacked(board, ourKing, board->isWhiteTurn))
@@ -30,6 +25,22 @@ std::vector<Move> MoveGen::generateLegalMoves(Board *board)
 
         board->unmakeMove(move);
     }
+
+    /*if (legal.empty() && !onlyGenCaptures)
+    {
+        // Check if king is in check
+        int ourKing = board->isWhiteTurn ? board->pieceList.whiteKing : board->pieceList.blackKing;
+        bool inCheck = isSquareAttacked(board, ourKing, !board->isWhiteTurn);
+
+        if (inCheck)
+        {
+            board->checkmate = board->isWhiteTurn ? 1 : 0; // Checkmate
+        }
+        else
+        {
+            board->checkmate = 2; // Stalemate
+        }
+    }*/
 
     return legal;
 }

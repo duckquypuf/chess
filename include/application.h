@@ -8,7 +8,7 @@ class Application
 {
 public:
     Window window = Window("Chess", 1440, 900);
-    Renderer renderer = Renderer("src/shaders/vertex.glsl", "src/shaders/fragment.glsl", window, "src/shaders/pieceVert.glsl", "src/shaders/pieceFrag.glsl");
+    Renderer renderer = Renderer("../src/shaders/vertex.glsl", "../src/shaders/fragment.glsl", window, "../src/shaders/pieceVert.glsl", "../src/shaders/pieceFrag.glsl");
     Board board;
 
     void run()
@@ -37,8 +37,8 @@ public:
                         std::cout << "MATE FOR WHITE" << std::endl;
                 }
 
-                board.handleInput(window, renderer.smallestDimension);
-                //board.moveComputer(false);
+                //board.handleInput(window, renderer.smallestDimension);
+                board.moveComputer(false);
 
                 if (board.checkmate >= 0)
                 {

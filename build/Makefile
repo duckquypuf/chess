@@ -184,29 +184,29 @@ include/move_generator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/include/move_generator.cpp.s
 .PHONY : include/move_generator.cpp.s
 
-src/main_debug.o: src/main_debug.cpp.o
-.PHONY : src/main_debug.o
+src/main.o: src/main.cpp.o
+.PHONY : src/main.o
 
 # target to build an object file
-src/main_debug.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/src/main_debug.cpp.o
-.PHONY : src/main_debug.cpp.o
+src/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
 
-src/main_debug.i: src/main_debug.cpp.i
-.PHONY : src/main_debug.i
+src/main.i: src/main.cpp.i
+.PHONY : src/main.i
 
 # target to preprocess a source file
-src/main_debug.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/src/main_debug.cpp.i
-.PHONY : src/main_debug.cpp.i
+src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
 
-src/main_debug.s: src/main_debug.cpp.s
-.PHONY : src/main_debug.s
+src/main.s: src/main.cpp.s
+.PHONY : src/main.s
 
 # target to generate assembly for a file
-src/main_debug.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/src/main_debug.cpp.s
-.PHONY : src/main_debug.cpp.s
+src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/chess.dir/build.make CMakeFiles/chess.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
 
 src/stb_impl.o: src/stb_impl.cpp.o
 .PHONY : src/stb_impl.o
@@ -440,9 +440,9 @@ help:
 	@echo "... include/move_generator.o"
 	@echo "... include/move_generator.i"
 	@echo "... include/move_generator.s"
-	@echo "... src/main_debug.o"
-	@echo "... src/main_debug.i"
-	@echo "... src/main_debug.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 	@echo "... src/stb_impl.o"
 	@echo "... src/stb_impl.i"
 	@echo "... src/stb_impl.s"
